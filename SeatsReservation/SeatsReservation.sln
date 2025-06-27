@@ -1,8 +1,56 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{88A307B3-D68C-4351-BA50-1B5CA0D8D0B4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeatsReservation.Domain", "src\SeatsReservation.Domain\SeatsReservation.Domain.csproj", "{BDC320D0-A6F4-4EB5-BA8B-8EBCC688E60A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeatsReservation.Web", "src\SeatsReservation.Web\SeatsReservation.Web.csproj", "{464FF946-7FC3-4588-AA8F-CF1F1F81A5BC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeatsReservation.Application", "src\SeatsReservation.Application\SeatsReservation.Application.csproj", "{E9316FD3-9F61-42B4-8822-DEBBA2D6B2AD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeatsReservation.Infrastructure", "src\SeatsReservation.Infrastructure\SeatsReservation.Infrastructure.csproj", "{EFE4AAF0-A454-4B32-B410-56CA7D4433E2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeatsReservation.Contracts", "src\SeatsReservation.Contracts\SeatsReservation.Contracts.csproj", "{0897F673-B2B6-4F97-8C98-7BDF791FC17B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeatsReservation.Presentation", "src\SeatsReservation.Presentation\SeatsReservation.Presentation.csproj", "{67017721-081B-44B8-AE12-A846335BC5DF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{BDC320D0-A6F4-4EB5-BA8B-8EBCC688E60A} = {88A307B3-D68C-4351-BA50-1B5CA0D8D0B4}
+		{464FF946-7FC3-4588-AA8F-CF1F1F81A5BC} = {88A307B3-D68C-4351-BA50-1B5CA0D8D0B4}
+		{E9316FD3-9F61-42B4-8822-DEBBA2D6B2AD} = {88A307B3-D68C-4351-BA50-1B5CA0D8D0B4}
+		{EFE4AAF0-A454-4B32-B410-56CA7D4433E2} = {88A307B3-D68C-4351-BA50-1B5CA0D8D0B4}
+		{0897F673-B2B6-4F97-8C98-7BDF791FC17B} = {88A307B3-D68C-4351-BA50-1B5CA0D8D0B4}
+		{67017721-081B-44B8-AE12-A846335BC5DF} = {88A307B3-D68C-4351-BA50-1B5CA0D8D0B4}
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BDC320D0-A6F4-4EB5-BA8B-8EBCC688E60A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BDC320D0-A6F4-4EB5-BA8B-8EBCC688E60A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BDC320D0-A6F4-4EB5-BA8B-8EBCC688E60A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BDC320D0-A6F4-4EB5-BA8B-8EBCC688E60A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{464FF946-7FC3-4588-AA8F-CF1F1F81A5BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{464FF946-7FC3-4588-AA8F-CF1F1F81A5BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{464FF946-7FC3-4588-AA8F-CF1F1F81A5BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{464FF946-7FC3-4588-AA8F-CF1F1F81A5BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9316FD3-9F61-42B4-8822-DEBBA2D6B2AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9316FD3-9F61-42B4-8822-DEBBA2D6B2AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9316FD3-9F61-42B4-8822-DEBBA2D6B2AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9316FD3-9F61-42B4-8822-DEBBA2D6B2AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFE4AAF0-A454-4B32-B410-56CA7D4433E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFE4AAF0-A454-4B32-B410-56CA7D4433E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFE4AAF0-A454-4B32-B410-56CA7D4433E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFE4AAF0-A454-4B32-B410-56CA7D4433E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0897F673-B2B6-4F97-8C98-7BDF791FC17B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0897F673-B2B6-4F97-8C98-7BDF791FC17B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0897F673-B2B6-4F97-8C98-7BDF791FC17B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0897F673-B2B6-4F97-8C98-7BDF791FC17B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67017721-081B-44B8-AE12-A846335BC5DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67017721-081B-44B8-AE12-A846335BC5DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67017721-081B-44B8-AE12-A846335BC5DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67017721-081B-44B8-AE12-A846335BC5DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
