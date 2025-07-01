@@ -8,14 +8,19 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.6"/>
-        <PackageReference Include="sharedservice.core" Version="1.0.2" />
-        <PackageReference Include="sharedservice.framework" Version="1.0.2" />
-        <PackageReference Include="SharedService.SharedKernel" Version="1.0.2" />
+        <PackageReference Include="sharedservice.core" Version="1.0.3" />
+        <PackageReference Include="sharedservice.framework" Version="1.0.3" />
+        <PackageReference Include="sharedservice.sharedkernel" Version="1.0.3" />
         <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="9.0.1" />
     </ItemGroup>
 
     <ItemGroup>
       <Folder Include="wwwroot\swagger-ui\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\SeatsReservation.Infrastructure\SeatsReservation.Infrastructure.csproj" />
+      <ProjectReference Include="..\SeatsReservation.Presentation\SeatsReservation.Presentation.csproj" />
     </ItemGroup>
 
 </Project>

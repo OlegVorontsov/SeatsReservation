@@ -1,4 +1,6 @@
 using Microsoft.OpenApi.Models;
+using SeatsReservation.Application;
+using SeatsReservation.Infrastructure;
 using SharedService.SharedKernel.Errors;
 using SharedService.SharedKernel.Models;
 
@@ -14,9 +16,10 @@ public static class ProgramDependencies
         services.AddControllers();
 
         // register modules
-        /*services.AddWeb(configuration)
-            .AddApplication(configuration)
-            .AddInfrastructure(configuration);*/
+        services.AddApplication(configuration)
+                .AddInfrastructure(configuration);
+                
+        //AddWeb(configuration)
 
         return services;
     }
