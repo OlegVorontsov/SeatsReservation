@@ -12,7 +12,7 @@ public static class AppConfiguration
             app.MapOpenApi();
             app.UseSwaggerUI(options =>
             {
-                options.SwaggerEndpoint("/openapi/v1.json", "DirectoryService");
+                options.SwaggerEndpoint("/openapi/v1.json", "SeatsReservation");
                 options.InjectStylesheet("/swagger-ui/SwaggerDark.css");
             });
             //await app.ApplyMigrations();

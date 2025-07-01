@@ -6,4 +6,12 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <PackageReference Include="sharedservice.framework" Version="1.0.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\SeatsReservation.Application\SeatsReservation.Application.csproj" />
+    </ItemGroup>
+
 </Project>
