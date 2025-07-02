@@ -1,4 +1,4 @@
-namespace SeatsReservation.Domain.Reservations;
+namespace SeatsReservation.Domain.Entities.Reservations;
 
 public enum ReservationStatus
 {

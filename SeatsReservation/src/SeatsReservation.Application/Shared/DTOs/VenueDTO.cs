@@ -1,17 +1,17 @@
-using SeatsReservation.Domain.Venues;
+using SeatsReservation.Domain.Entities.Venues;
 
 namespace SeatsReservation.Application.Shared.DTOs;
 
 public record VenueDto(
     Guid Id,
-    string Name,
+    string VenueName,
     int SeatsLimit,
     IEnumerable<SeatDto> Seats)
 {
     public static VenueDto FromDomainEntity(Venue entity)
         => new(
-            entity.Id,
-            entity.Name,
+            entity.Id.Value,
+            entity.VenueName.ToString(),
             entity.SeatsLimit,
             entity.Seats.Select(s => new SeatDto(s.SeatNumber, s.RowNumber)));
 }

@@ -5,5 +5,6 @@ namespace SeatsReservation.Application.Commands.Venues.CreateVenue;
 
 public record CreateVenueCommand(
     string Name,
+    string Prefix,
     int SeatsLimit,
     IEnumerable<SeatDto> Seats) : ICommand;

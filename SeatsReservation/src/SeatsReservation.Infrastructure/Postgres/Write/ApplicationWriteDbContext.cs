@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using SeatsReservation.Domain.Venues;
+using SeatsReservation.Domain.Entities.Venues;
 
 namespace SeatsReservation.Infrastructure.Postgres.Write;
 

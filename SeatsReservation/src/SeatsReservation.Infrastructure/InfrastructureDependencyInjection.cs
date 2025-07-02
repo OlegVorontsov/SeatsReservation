@@ -21,7 +21,9 @@ public static class InfrastructureDependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        var dbConnectionString = configuration.GetConnectionString(ApplicationWriteDbContext.POSTGRES_CONFIGURATION);
+        var dbConnectionString = configuration
+            .GetConnectionString(ApplicationWriteDbContext.POSTGRES_CONFIGURATION) ??
+                                 throw new ApplicationException("Postgres connection string not found");
         services.AddScoped(_ => new ApplicationWriteDbContext(dbConnectionString));
 
         //services.AddSingleton<IDBConnectionFactory>(_ => new ReadDBConnectionFactory(dbConnectionString));

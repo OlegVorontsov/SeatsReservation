@@ -1,4 +1,4 @@
-using SeatsReservation.Domain.Venues;
+using SeatsReservation.Domain.Entities.Venues;
 
 namespace SeatsReservation.Application.Shared.DTOs;
 

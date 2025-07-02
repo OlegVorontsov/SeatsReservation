@@ -1,17 +1,23 @@
 using CSharpFunctionalExtensions;
+using SharedService.SharedKernel.BaseClasses;
 using SharedService.SharedKernel.Errors;
 
-namespace SeatsReservation.Domain.Venues;
+namespace SeatsReservation.Domain.Entities.Venues;
 
 public class Seat
 {
-    public Guid Id { get; set; }
+    public Id<Seat> Id { get; set; } = null!;
 
     public int SeatNumber { get; private set; }
 
     public int RowNumber { get; private set; }
+    
+    public Id<Venue> VenueId { get; private set; } = null!;
+    
+    //Ef Core
+    private Seat() { }
 
-    public Seat(Guid id, int seatNumber, int rowNumber)
+    public Seat(Id<Seat>  id, int seatNumber, int rowNumber)
     {
         Id = id;
         SeatNumber = seatNumber;
@@ -23,6 +29,6 @@ public class Seat
         if (seatNumber <= 0 || rowNumber <= 0)
             return Error.Validation("seat.number", "Row number and seat number must be greater than zero");
         
-        return new Seat(Guid.NewGuid(), seatNumber, rowNumber);
+        return new Seat(Id<Seat>.Create(Guid.NewGuid()), seatNumber, rowNumber);
     }
 }

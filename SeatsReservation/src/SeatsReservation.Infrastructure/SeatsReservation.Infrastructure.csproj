@@ -17,10 +17,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Postgres\Configurations\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\SeatsReservation.Application\SeatsReservation.Application.csproj" />
       <ProjectReference Include="..\SeatsReservation.Domain\SeatsReservation.Domain.csproj" />
     </ItemGroup>
