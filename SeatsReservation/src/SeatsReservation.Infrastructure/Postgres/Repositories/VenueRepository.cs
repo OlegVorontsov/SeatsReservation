@@ -1,6 +1,6 @@
 using CSharpFunctionalExtensions;
 using SeatsReservation.Application.Interfaces.Repositories;
-using SeatsReservation.Domain.Venues;
+using SeatsReservation.Domain.Entities.Venues;
 using SeatsReservation.Infrastructure.Postgres.Write;
 
 namespace SeatsReservation.Infrastructure.Postgres.Repositories;

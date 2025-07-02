@@ -1,13 +1,15 @@
 using CSharpFunctionalExtensions;
+using SeatsReservation.Domain.ValueObjects.Events;
+using SharedService.SharedKernel.BaseClasses;
 using SharedService.SharedKernel.Errors;
 
-namespace SeatsReservation.Domain.Venues;
+namespace SeatsReservation.Domain.Entities.Venues;
 
 public class Venue
 {
-    public Guid Id { get; set; }
+    public Id<Venue> Id { get; } = null!;
 
-    public string Name { get; private set; }
+    public VenueName VenueName { get; private set; } = null!;
     
     public int SeatsLimit { get; private set; }
     
@@ -16,11 +18,14 @@ public class Venue
     public IReadOnlyList<Seat> Seats => _seats;
     
     public int SeatsCount => _seats.Count;
+    
+    //Ef Core
+    private Venue() { }
 
-    public Venue(Guid id, string name, int seatsLimit, IEnumerable<Seat> seats)
+    public Venue(Id<Venue> id, VenueName venueName, int seatsLimit, IEnumerable<Seat> seats)
     {
         Id = id;
-        Name = name;
+        VenueName = venueName;
         SeatsLimit = seatsLimit;
         _seats = seats.ToList();
     }

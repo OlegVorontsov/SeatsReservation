@@ -11,4 +11,8 @@
       <PackageReference Include="sharedservice.sharedkernel" Version="1.0.3" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Entities\" />
+    </ItemGroup>
+
 </Project>
