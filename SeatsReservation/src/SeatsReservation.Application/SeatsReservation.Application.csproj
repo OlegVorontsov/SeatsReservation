@@ -15,4 +15,8 @@
       <ProjectReference Include="..\SeatsReservation.Domain\SeatsReservation.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Shared\" />
+    </ItemGroup>
+
 </Project>

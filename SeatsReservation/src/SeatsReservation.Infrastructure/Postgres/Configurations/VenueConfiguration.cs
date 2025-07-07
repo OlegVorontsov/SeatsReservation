@@ -21,7 +21,7 @@ public class VenueConfiguration : IEntityTypeConfiguration<Venue>
                    value => Id<Venue>.Create(value))
                .HasColumnName("id");
         
-        builder.ComplexProperty(v => v.VenueName, vnb =>
+        builder.ComplexProperty(v => v.Name, vnb =>
         {
             vnb.Property(n => n.Name)
                 .IsRequired()

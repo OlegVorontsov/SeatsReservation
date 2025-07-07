@@ -17,7 +17,7 @@ public class Seat
     //Ef Core
     private Seat() { }
 
-    public Seat(Id<Seat>  id, int seatNumber, int rowNumber)
+    private Seat(Id<Seat> id, int seatNumber, int rowNumber)
     {
         Id = id;
         SeatNumber = seatNumber;

@@ -15,4 +15,8 @@
       <Folder Include="Entities\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\SeatsReservation.Contracts\SeatsReservation.Contracts.csproj" />
+    </ItemGroup>
+
 </Project>
