@@ -11,7 +11,7 @@ namespace SeatsReservation.Application.Commands.Venues.CreateVenue;
 
 public class CreateVenueHandler(
     IValidator<CreateVenueCommand> validator,
-    IVenueRepository repository)
+    IVenuesRepository repository)
     : ICommandHandler<VenueDto, CreateVenueCommand>
 {
     public async Task<Result<VenueDto, ErrorList>> Handle(
@@ -21,23 +21,21 @@ public class CreateVenueHandler(
             command, cancellationToken);
         if (validationResult.IsValid == false)
             return validationResult.ToList();
-
-        List<Seat> seats = [];
+        
+        var venueResult = Venue.Create(
+            command.Name, command.Prefix, command.SeatsLimit);
+        if (venueResult.IsFailure)
+            return venueResult.Error.ToErrors();
+        
         foreach (var seatDto in command.Seats)
         {
-            var seatResult = Seat.Create(
+            var seatResult = Seat.Create(venueResult.Value,
                 seatDto.SeatNumber, seatDto.RowNumber);
             if (seatResult.IsFailure)
                 return seatResult.Error.ToErrors();
             
-            seats.Add(seatResult.Value);
+            venueResult.Value.AddSeat(seatResult.Value);
         }
-        
-        var venueResult = Venue.Create(
-            command.Name, command.Prefix,
-            command.SeatsLimit, seats);
-        if (venueResult.IsFailure)
-            return venueResult.Error.ToErrors();
         
         await repository.CreateAsync(venueResult.Value, cancellationToken);
         

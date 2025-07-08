@@ -1,8 +1,11 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SeatsReservation.Application.Interfaces.Repositories;
+using SeatsReservation.Infrastructure.Postgres.Factories;
+using SeatsReservation.Infrastructure.Postgres.Interfaces;
 using SeatsReservation.Infrastructure.Postgres.Repositories;
 using SeatsReservation.Infrastructure.Postgres.Write;
+using SharedService.Core.Database.Read;
 
 namespace SeatsReservation.Infrastructure;
 
@@ -26,9 +29,10 @@ public static class InfrastructureDependencyInjection
                                  throw new ApplicationException("Postgres connection string not found");
         services.AddScoped(_ => new ApplicationWriteDbContext(dbConnectionString));
 
-        //services.AddSingleton<IDBConnectionFactory>(_ => new ReadDBConnectionFactory(dbConnectionString));
+        services.AddSingleton<IDbConnectionFactory, NpgsqlConnectionFactory>();
 
-        services.AddScoped<IVenueRepository, VenueRepository>();
+        //services.AddScoped<IVenuesRepository, EfCoreVenuesRepository>();
+        services.AddScoped<IVenuesRepository, NpgSqlVenuesesRepository>();
 
         //services.AddScoped<IUnitOfWork, DirectoryServiceUnitOfWork>();
 

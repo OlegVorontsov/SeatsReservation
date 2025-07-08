@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using SeatsReservation.Domain.Entities.Venues;
 
 namespace SeatsReservation.Infrastructure.Postgres.Write;
@@ -12,8 +13,7 @@ public class ApplicationWriteDbContext(string connectionString) : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseNpgsql(connectionString);
-        optionsBuilder.LogTo(Console.WriteLine)
-                      .EnableSensitiveDataLogging();
+        optionsBuilder.UseLoggerFactory(CreateLoggerFactory());
         optionsBuilder.UseSnakeCaseNamingConvention();
 
         base.OnConfiguring(optionsBuilder);
@@ -29,4 +29,7 @@ public class ApplicationWriteDbContext(string connectionString) : DbContext
 
         base.OnModelCreating(modelBuilder);
     }
+    
+    private ILoggerFactory CreateLoggerFactory() =>
+    LoggerFactory.Create(builder => {builder.AddConsole();});
 }

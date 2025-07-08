@@ -22,16 +22,15 @@ public class Venue
     //Ef Core
     private Venue() { }
 
-    private Venue(Id<Venue> id, VenueName name, int seatsLimit, List<Seat> seats)
+    private Venue(Id<Venue> id, VenueName name, int seatsLimit)
     {
         Id = id;
         Name = name;
         SeatsLimit = seatsLimit;
-        _seats = seats;
     }
     
     public static Result<Venue, Error> Create(
-        string name, string prefix, int seatsLimit, List<Seat> seats)
+        string name, string prefix, int seatsLimit)
     {
         if (seatsLimit <= 0)
             return Error.Validation("venue.seatsLimit", "Seats limit must be greater than zero");
@@ -40,13 +39,7 @@ public class Venue
         if (venueNameResult.IsFailure)
             return venueNameResult.Error;
         
-        if (seats.Count < 1)
-            return Error.Validation("venue.seats", "Seats count must be greater than one");
-        
-        if (seats.Count > seatsLimit)
-            return Error.Validation("venue.seats", "Seats count exceeds the venue's seat limit");
-        
-        return new Venue(Id<Venue>.Create(Guid.NewGuid()), venueNameResult.Value, seatsLimit, seats);
+        return new Venue(Id<Venue>.Create(Guid.NewGuid()), venueNameResult.Value, seatsLimit);
     }
 
     public UnitResult<Error> AddSeat(Seat seat)
