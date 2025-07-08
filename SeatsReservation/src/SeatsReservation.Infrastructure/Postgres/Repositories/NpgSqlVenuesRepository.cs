@@ -3,14 +3,16 @@ using Dapper;
 using Microsoft.Extensions.Logging;
 using SeatsReservation.Application.Interfaces.Repositories;
 using SeatsReservation.Domain.Entities.Venues;
+using SeatsReservation.Domain.ValueObjects.Events;
 using SeatsReservation.Infrastructure.Postgres.Interfaces;
+using SharedService.SharedKernel.BaseClasses;
 using SharedService.SharedKernel.Errors;
 
 namespace SeatsReservation.Infrastructure.Postgres.Repositories;
 
-public class NpgSqlVenuesesRepository(
+public class NpgSqlVenuesRepository(
     IDbConnectionFactory connectionFactory,
-    ILogger<NpgSqlVenuesesRepository> logger) : IVenuesRepository
+    ILogger<NpgSqlVenuesRepository> logger) : IVenuesRepository
 {
     public async Task<Result<Venue, Error>> CreateAsync(Venue venue, CancellationToken cancellationToken)
     {
@@ -59,6 +61,40 @@ public class NpgSqlVenuesesRepository(
             transaction.Rollback();
             logger.LogError(ex, "Fail to insert venue");
             return Error.Failure("venue.insert", ex.Message);
+        }
+    }
+    
+    public async Task<Result<Guid, Error>> UpdateName(
+        Id<Venue> id, VenueName venueName, CancellationToken cancellationToken)
+    {
+        using var connection = await connectionFactory.CreateConnectionAsync(cancellationToken);
+        
+        using var transaction = connection.BeginTransaction();
+
+        try
+        {
+            const string updateNameSql = """
+                                          UPDATE seats_reservation.venues
+                                          SET name = @Name
+                                          WHERE id = @Id
+                                          """;
+            var updateNameParams = new
+            {
+                Id = id.Value,
+                Name = venueName.Name,
+            };
+        
+            await connection.ExecuteAsync(updateNameSql, updateNameParams);
+            
+            transaction.Commit();
+        
+            return id.Value;
+        }
+        catch (Exception ex)
+        {
+            transaction.Rollback();
+            logger.LogError(ex, "Fail to update venue name");
+            return Error.Failure("venue.update", ex.Message);
         }
     }
 }
