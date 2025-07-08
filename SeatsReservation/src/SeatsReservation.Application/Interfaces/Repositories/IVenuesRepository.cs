@@ -14,4 +14,7 @@ public interface IVenuesRepository
     Task<Result<Guid, Error>> UpdateName(
         Id<Venue> id,
         VenueName venueName, CancellationToken cancellationToken = default);
+
+    Task<UnitResult<Error>> UpdateNameByPrefix(
+        string prefix, VenueName venueName, CancellationToken cancellationToken = default);
 }

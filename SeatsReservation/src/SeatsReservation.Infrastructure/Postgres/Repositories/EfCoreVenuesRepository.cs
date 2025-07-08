@@ -54,4 +54,15 @@ public class EfCoreVenuesRepository(
         }
 
     }
+    
+    public async Task<UnitResult<Error>> UpdateNameByPrefix(
+        string prefix, VenueName venueName, CancellationToken cancellationToken)
+    {
+        await context.Venues
+            .Where(v => v.Name.Prefix.StartsWith(prefix))
+            .ExecuteUpdateAsync(setter =>
+                setter.SetProperty(v => v.Name.Name, venueName.Name), cancellationToken);
+
+        return UnitResult.Success<Error>();
+    }
 }

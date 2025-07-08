@@ -29,10 +29,10 @@ public static class InfrastructureDependencyInjection
                                  throw new ApplicationException("Postgres connection string not found");
         services.AddScoped(_ => new ApplicationWriteDbContext(dbConnectionString));
 
-        //services.AddSingleton<IDbConnectionFactory, NpgsqlConnectionFactory>();
-        //services.AddScoped<IVenuesRepository, NpgSqlVenuesRepository>();
+        services.AddSingleton<IDbConnectionFactory, NpgsqlConnectionFactory>();
+        services.AddScoped<IVenuesRepository, NpgSqlVenuesRepository>();
 
-        services.AddScoped<IVenuesRepository, EfCoreVenuesRepository>();
+        //services.AddScoped<IVenuesRepository, EfCoreVenuesRepository>();
 
         //services.AddScoped<IUnitOfWork, DirectoryServiceUnitOfWork>();
 
