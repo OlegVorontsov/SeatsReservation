@@ -21,7 +21,7 @@ public class VenueConfiguration : IEntityTypeConfiguration<Venue>
                    value => Id<Venue>.Create(value))
                .HasColumnName("id");
         
-        builder.ComplexProperty(v => v.VenueName, vnb =>
+        builder.ComplexProperty(v => v.Name, vnb =>
         {
             vnb.Property(n => n.Name)
                 .IsRequired()
@@ -39,8 +39,8 @@ public class VenueConfiguration : IEntityTypeConfiguration<Venue>
                .HasColumnName("seats_limit");
 
         builder.HasMany(v => v.Seats)
-               .WithOne()
-               .HasForeignKey(v => v.VenueId)
+               .WithOne(s => s.Venue)
+               .HasForeignKey("venue_id")
                .IsRequired()
                .OnDelete(DeleteBehavior.Cascade);
 

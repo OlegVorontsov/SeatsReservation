@@ -9,7 +9,7 @@ public class Venue
 {
     public Id<Venue> Id { get; } = null!;
 
-    public VenueName VenueName { get; private set; } = null!;
+    public VenueName Name { get; private set; } = null!;
     
     public int SeatsLimit { get; private set; }
     
@@ -22,12 +22,24 @@ public class Venue
     //Ef Core
     private Venue() { }
 
-    public Venue(Id<Venue> id, VenueName venueName, int seatsLimit, IEnumerable<Seat> seats)
+    private Venue(Id<Venue> id, VenueName name, int seatsLimit)
     {
         Id = id;
-        VenueName = venueName;
+        Name = name;
         SeatsLimit = seatsLimit;
-        _seats = seats.ToList();
+    }
+    
+    public static Result<Venue, Error> Create(
+        string name, string prefix, int seatsLimit)
+    {
+        if (seatsLimit <= 0)
+            return Error.Validation("venue.seatsLimit", "Seats limit must be greater than zero");
+
+        var venueNameResult = VenueName.Create(name, prefix);
+        if (venueNameResult.IsFailure)
+            return venueNameResult.Error;
+        
+        return new Venue(Id<Venue>.Create(Guid.NewGuid()), venueNameResult.Value, seatsLimit);
     }
 
     public UnitResult<Error> AddSeat(Seat seat)

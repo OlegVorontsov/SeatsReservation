@@ -12,23 +12,24 @@ public class Seat
 
     public int RowNumber { get; private set; }
     
-    public Id<Venue> VenueId { get; private set; } = null!;
+    public Venue Venue { get; private set; } = null!;
     
     //Ef Core
     private Seat() { }
 
-    public Seat(Id<Seat>  id, int seatNumber, int rowNumber)
+    private Seat(Id<Seat> id, Venue venue, int seatNumber, int rowNumber)
     {
         Id = id;
+        Venue = venue;
         SeatNumber = seatNumber;
         RowNumber = rowNumber;
     }
 
-    public static Result<Seat, Error> Create(int seatNumber, int rowNumber)
+    public static Result<Seat, Error> Create(Venue venue, int seatNumber, int rowNumber)
     {
         if (seatNumber <= 0 || rowNumber <= 0)
             return Error.Validation("seat.number", "Row number and seat number must be greater than zero");
         
-        return new Seat(Id<Seat>.Create(Guid.NewGuid()), seatNumber, rowNumber);
+        return new Seat(Id<Seat>.Create(Guid.NewGuid()), venue, seatNumber, rowNumber);
     }
 }

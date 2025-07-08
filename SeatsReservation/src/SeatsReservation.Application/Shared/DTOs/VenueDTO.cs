@@ -11,7 +11,7 @@ public record VenueDto(
     public static VenueDto FromDomainEntity(Venue entity)
         => new(
             entity.Id.Value,
-            entity.VenueName.ToString(),
+            entity.Name.ToString(),
             entity.SeatsLimit,
             entity.Seats.Select(s => new SeatDto(s.SeatNumber, s.RowNumber)));
 }

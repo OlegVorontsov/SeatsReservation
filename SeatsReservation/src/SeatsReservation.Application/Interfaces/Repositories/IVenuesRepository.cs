@@ -1,10 +1,11 @@
 using CSharpFunctionalExtensions;
 using SeatsReservation.Domain.Entities.Venues;
+using SharedService.SharedKernel.Errors;
 
 namespace SeatsReservation.Application.Interfaces.Repositories;
 
-public interface IVenueRepository
+public interface IVenuesRepository
 {
-    Task<Result<Venue>> CreateAsync(
+    Task<Result<Venue, Error>> CreateAsync(
         Venue entity, CancellationToken cancellationToken = default);
 }
