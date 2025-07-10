@@ -23,6 +23,7 @@ public class UpdateVenueHandler(
         if (validationResult.IsValid == false)
             return validationResult.ToList();
         
+        // лучше получать сущность из бд и менять что нужно
         var venueResult = Venue.Create(
             command.Name, command.Prefix, command.SeatsLimit, Id<Venue>.Create(command.Id));
         if (venueResult.IsFailure)

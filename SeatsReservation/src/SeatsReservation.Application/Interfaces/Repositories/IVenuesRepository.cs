@@ -20,4 +20,7 @@ public interface IVenuesRepository
     Task SaveAsync(CancellationToken cancellationToken = default);
 
     Task UpdateAsync(Venue venue, CancellationToken cancellationToken = default);
+    
+    Task<Result<IReadOnlyList<Venue>, Error>> GetByPrefix(
+        string prefix, CancellationToken cancellationToken = default);
 }

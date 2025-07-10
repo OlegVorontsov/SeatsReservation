@@ -19,11 +19,24 @@ public class EfCoreVenuesRepository(
         Id<Venue> id, CancellationToken cancellationToken)
     {
         var venue = await context.Venues
+            .Include(v => v.Seats)
             .FirstOrDefaultAsync(v => v.Id == id, cancellationToken);
         
         return venue is null
             ? Error.NotFound("venue.not.found", "Venue not found")
             : venue;
+    }
+    
+    public async Task<Result<IReadOnlyList<Venue>, Error>> GetByPrefix(
+        string prefix, CancellationToken cancellationToken)
+    {
+        var venues = await context.Venues
+            .Where(v => v.Name.Prefix.StartsWith(prefix))
+            .ToListAsync(cancellationToken);
+        
+        return venues.Count == 0
+            ? Error.NotFound("venues.not.found", "Venues not found")
+            : venues;
     }
     
     public async Task SaveAsync(CancellationToken cancellationToken) =>

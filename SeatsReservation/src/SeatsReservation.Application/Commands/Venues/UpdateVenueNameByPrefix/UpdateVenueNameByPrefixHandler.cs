@@ -25,10 +25,24 @@ public class UpdateVenueNameByPrefixHandler(
         if (venueNameResult.IsFailure)
             return venueNameResult.Error.ToErrors();
         
-        var updateResult = await repository.UpdateNameByPrefix(
+        /*var updateResult = await repository.UpdateNameByPrefix(
             command.Prefix, venueNameResult.Value, cancellationToken);
         if (updateResult.IsFailure)
-            return updateResult.Error.ToErrors();
+            return updateResult.Error.ToErrors();*/
+        
+        // не использовать если venues очень много
+        var venuesResult = await repository.GetByPrefix(command.Name, cancellationToken);
+        if (venuesResult.IsFailure)
+            return venuesResult.Error.ToErrors();
+
+        foreach (var venue in venuesResult.Value)
+        {
+            var updateNameResult = venue.UpdateName(command.Name);
+            if (updateNameResult.IsFailure)
+                return updateNameResult.Error.ToErrors();
+        }
+        
+        await repository.SaveAsync(cancellationToken);
 
         return "Venue name's updated";
     }
