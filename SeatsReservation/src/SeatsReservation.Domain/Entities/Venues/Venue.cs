@@ -30,7 +30,7 @@ public class Venue
     }
     
     public static Result<Venue, Error> Create(
-        string name, string prefix, int seatsLimit)
+        string name, string prefix, int seatsLimit, Id<Venue>? venueId = null)
     {
         if (seatsLimit <= 0)
             return Error.Validation("venue.seatsLimit", "Seats limit must be greater than zero");
@@ -39,7 +39,10 @@ public class Venue
         if (venueNameResult.IsFailure)
             return venueNameResult.Error;
         
-        return new Venue(Id<Venue>.Create(Guid.NewGuid()), venueNameResult.Value, seatsLimit);
+        return new Venue
+            (venueId ?? Id<Venue>.Create(Guid.NewGuid()),
+                venueNameResult.Value,
+                seatsLimit);
     }
 
     public UnitResult<Error> AddSeat(Seat seat)

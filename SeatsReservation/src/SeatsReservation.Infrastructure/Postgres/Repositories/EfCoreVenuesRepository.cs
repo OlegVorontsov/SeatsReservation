@@ -56,4 +56,11 @@ public class EfCoreVenuesRepository(
 
         return UnitResult.Success<Error>();
     }
+    
+    public async Task UpdateAsync(Venue venue, CancellationToken cancellationToken = default)
+    {
+        context.Venues.Update(venue);
+
+        await context.SaveChangesAsync(cancellationToken);
+    }
 }

@@ -22,6 +22,9 @@ public class NpgSqlVenuesRepository(
     public async Task SaveAsync(CancellationToken cancellationToken) =>
         throw new NotImplementedException();
     
+    public async Task UpdateAsync(Venue venue, CancellationToken cancellationToken = default) =>
+        throw new NotImplementedException();
+    
     public async Task<Result<Venue, Error>> CreateAsync(Venue venue, CancellationToken cancellationToken)
     {
         using var connection = await connectionFactory.CreateConnectionAsync(cancellationToken);

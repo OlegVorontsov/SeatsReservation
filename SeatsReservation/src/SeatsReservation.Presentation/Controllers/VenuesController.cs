@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using SeatsReservation.Application.Commands.Venues.CreateVenue;
+using SeatsReservation.Application.Commands.Venues.UpdateVenue;
 using SeatsReservation.Application.Commands.Venues.UpdateVenueName;
 using SeatsReservation.Application.Commands.Venues.UpdateVenueNameByPrefix;
 using SeatsReservation.Application.Shared.DTOs;
@@ -28,6 +29,13 @@ public class VenuesController : ApplicationController
     public async Task<EndpointResult<string>> UpdateNameByPrefix(
         [FromServices] UpdateVenueNameByPrefixHandler handler,
         [FromBody] UpdateVenueNameByPrefixCommand command,
+        CancellationToken cancellationToken = default) =>
+        await handler.Handle(command, cancellationToken);
+    
+    [HttpPut]
+    public async Task<EndpointResult<VenueDto>> Update(
+        [FromServices] UpdateVenueHandler handler,
+        [FromBody] UpdateVenueCommand command,
         CancellationToken cancellationToken = default) =>
         await handler.Handle(command, cancellationToken);
 }

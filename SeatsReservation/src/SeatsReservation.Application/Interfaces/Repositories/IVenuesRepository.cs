@@ -18,4 +18,6 @@ public interface IVenuesRepository
         Id<Venue> id, CancellationToken cancellationToken);
 
     Task SaveAsync(CancellationToken cancellationToken = default);
+
+    Task UpdateAsync(Venue venue, CancellationToken cancellationToken = default);
 }
