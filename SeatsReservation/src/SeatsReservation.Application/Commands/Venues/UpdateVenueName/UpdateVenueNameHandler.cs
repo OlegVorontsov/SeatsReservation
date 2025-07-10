@@ -25,14 +25,16 @@ public class UpdateVenueNameHandler(
 
         var venueId = Id<Venue>.Create(command.Id);
         
-        var venueNameResult = VenueName.CreateWithoutPrefix(command.Name);
-        if (venueNameResult.IsFailure)
-            return venueNameResult.Error.ToErrors();
+        var venueResult = await repository.GetById(venueId, cancellationToken);
+        if (venueResult.IsFailure)
+            return venueResult.Error.ToErrors();
         
-        var updateResult = await repository.UpdateName(venueId, venueNameResult.Value, cancellationToken);
+        var updateResult = venueResult.Value.UpdateName(command.Name);
         if (updateResult.IsFailure)
             return updateResult.Error.ToErrors();
 
+        await repository.SaveAsync(cancellationToken);
+        
         return venueId.Value;
     }
 }

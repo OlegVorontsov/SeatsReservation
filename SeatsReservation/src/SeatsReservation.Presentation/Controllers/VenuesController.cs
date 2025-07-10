@@ -17,14 +17,14 @@ public class VenuesController : ApplicationController
         CancellationToken cancellationToken = default) =>
         await handler.Handle(command, cancellationToken);
     
-    [HttpPatch]
+    [HttpPatch("name")]
     public async Task<EndpointResult<Guid>> UpdateName(
         [FromServices] UpdateVenueNameHandler handler,
         [FromBody] UpdateVenueNameCommand command,
         CancellationToken cancellationToken = default) =>
         await handler.Handle(command, cancellationToken);
     
-    [HttpPatch("prefix")]
+    [HttpPatch("name-by-prefix")]
     public async Task<EndpointResult<string>> UpdateNameByPrefix(
         [FromServices] UpdateVenueNameByPrefixHandler handler,
         [FromBody] UpdateVenueNameByPrefixCommand command,

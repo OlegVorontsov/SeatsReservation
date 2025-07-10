@@ -14,6 +14,14 @@ public class NpgSqlVenuesRepository(
     IDbConnectionFactory connectionFactory,
     ILogger<NpgSqlVenuesRepository> logger) : IVenuesRepository
 {
+
+    public async Task<Result<Venue, Error>> GetById(
+        Id<Venue> id, CancellationToken cancellationToken) =>
+        throw new NotImplementedException();
+    
+    public async Task SaveAsync(CancellationToken cancellationToken) =>
+        throw new NotImplementedException();
+    
     public async Task<Result<Venue, Error>> CreateAsync(Venue venue, CancellationToken cancellationToken)
     {
         using var connection = await connectionFactory.CreateConnectionAsync(cancellationToken);

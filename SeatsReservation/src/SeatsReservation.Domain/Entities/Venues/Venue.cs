@@ -50,8 +50,17 @@ public class Venue
         _seats.Add(seat);
         return UnitResult.Success<Error>();
     }
-    
-    public void UpdateName(VenueName name) => Name = name;
+
+    public UnitResult<Error> UpdateName(string name)
+    {
+        var venueNameResult = VenueName.Create(name, Name.Prefix);
+        if (venueNameResult.IsFailure)
+            return Error.Failure("create.venue.name", "Fail to create new venue name");
+        
+        Name = venueNameResult.Value;
+        
+        return UnitResult.Success<Error>();
+    }
 
     public UnitResult<Error> ExpandSeatsLimit(int newSeatsLimit)
     {

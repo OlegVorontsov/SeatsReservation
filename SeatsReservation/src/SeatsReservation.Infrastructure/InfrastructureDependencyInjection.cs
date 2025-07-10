@@ -30,9 +30,9 @@ public static class InfrastructureDependencyInjection
         services.AddScoped(_ => new ApplicationWriteDbContext(dbConnectionString));
 
         services.AddSingleton<IDbConnectionFactory, NpgsqlConnectionFactory>();
-        services.AddScoped<IVenuesRepository, NpgSqlVenuesRepository>();
-
-        //services.AddScoped<IVenuesRepository, EfCoreVenuesRepository>();
+        
+        //services.AddScoped<IVenuesRepository, NpgSqlVenuesRepository>();
+        services.AddScoped<IVenuesRepository, EfCoreVenuesRepository>();
 
         //services.AddScoped<IUnitOfWork, DirectoryServiceUnitOfWork>();
 
