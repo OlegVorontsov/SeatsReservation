@@ -1,6 +1,6 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
-using SeatsReservation.Application.Interfaces.Repositories;
+using SeatsReservation.Application.Interfaces.Database;
 using SeatsReservation.Domain.ValueObjects.Events;
 using SharedService.Core.Abstractions;
 using SharedService.Core.Validation;
@@ -10,7 +10,8 @@ namespace SeatsReservation.Application.Commands.Venues.UpdateVenueNameByPrefix;
 
 public class UpdateVenueNameByPrefixHandler(
     IValidator<UpdateVenueNameByPrefixCommand> validator,
-    IVenuesRepository repository)
+    IVenuesRepository repository,
+    ITransactionManager transactionManager)
     : ICommandHandler<string, UpdateVenueNameByPrefixCommand>
 {
     public async Task<Result<string, ErrorList>> Handle(
@@ -42,7 +43,7 @@ public class UpdateVenueNameByPrefixHandler(
                 return updateNameResult.Error.ToErrors();
         }
         
-        await repository.SaveAsync(cancellationToken);
+        await transactionManager.SaveChangesAsync(cancellationToken);
 
         return "Venue name's updated";
     }

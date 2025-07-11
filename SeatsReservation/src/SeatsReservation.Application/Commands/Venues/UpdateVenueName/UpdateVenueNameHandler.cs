@@ -1,6 +1,6 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
-using SeatsReservation.Application.Interfaces.Repositories;
+using SeatsReservation.Application.Interfaces.Database;
 using SeatsReservation.Domain.Entities.Venues;
 using SeatsReservation.Domain.ValueObjects.Events;
 using SharedService.Core.Abstractions;
@@ -12,7 +12,8 @@ namespace SeatsReservation.Application.Commands.Venues.UpdateVenueName;
 
 public class UpdateVenueNameHandler(
     IValidator<UpdateVenueNameCommand> validator,
-    IVenuesRepository repository)
+    IVenuesRepository repository,
+    ITransactionManager transactionManager)
     : ICommandHandler<Guid, UpdateVenueNameCommand>
 {
     public async Task<Result<Guid, ErrorList>> Handle(
@@ -33,7 +34,7 @@ public class UpdateVenueNameHandler(
         if (updateResult.IsFailure)
             return updateResult.Error.ToErrors();
 
-        await repository.SaveAsync(cancellationToken);
+        await transactionManager.SaveChangesAsync(cancellationToken);
         
         return venueId.Value;
     }

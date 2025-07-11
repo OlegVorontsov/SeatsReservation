@@ -1,7 +1,8 @@
 using CSharpFunctionalExtensions;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using SeatsReservation.Application.Interfaces.Repositories;
+using SeatsReservation.Application.Interfaces.Database;
 using SeatsReservation.Domain.Entities.Venues;
 using SeatsReservation.Domain.ValueObjects.Events;
 using SeatsReservation.Infrastructure.Postgres.Write;
@@ -50,9 +51,6 @@ public class EfCoreVenuesRepository(
             : venues;
     }
     
-    public async Task SaveAsync(CancellationToken cancellationToken) =>
-        await context.SaveChangesAsync(cancellationToken);
-    
     public async Task<Result<Venue, Error>> CreateAsync(
         Venue entity, CancellationToken cancellationToken = default)
     {
@@ -73,10 +71,19 @@ public class EfCoreVenuesRepository(
     public async Task<UnitResult<Error>> UpdateNameByPrefix(
         string prefix, VenueName venueName, CancellationToken cancellationToken)
     {
-        await context.Venues
+        // вариант отправки sql с помощью EfCore
+        var sql = "UPDATE seats_reservation.venues SET name = @name WHERE prefix = @prefix";
+        var parameters = new[]
+        {
+            new SqlParameter("@name", venueName.Name),
+            new SqlParameter("@prefix", prefix)
+        };
+
+        await context.Database.ExecuteSqlRawAsync(sql, parameters, cancellationToken);
+        /*await context.Venues
             .Where(v => v.Name.Prefix.StartsWith(prefix))
             .ExecuteUpdateAsync(setter => // отправляет запрос сразу
-                setter.SetProperty(v => v.Name.Name, venueName.Name), cancellationToken);
+                setter.SetProperty(v => v.Name.Name, venueName.Name), cancellationToken);*/
 
         return UnitResult.Success<Error>();
     }

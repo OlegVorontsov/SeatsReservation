@@ -4,7 +4,7 @@ using SeatsReservation.Domain.ValueObjects.Events;
 using SharedService.SharedKernel.BaseClasses;
 using SharedService.SharedKernel.Errors;
 
-namespace SeatsReservation.Application.Interfaces.Repositories;
+namespace SeatsReservation.Application.Interfaces.Database;
 
 public interface IVenuesRepository
 {
@@ -19,9 +19,7 @@ public interface IVenuesRepository
 
     Task<Result<Venue, Error>> GetByIdWithSeats(
         Id<Venue> id, CancellationToken cancellationToken = default);
-
-    Task SaveAsync(CancellationToken cancellationToken = default);
-
+    
     Task UpdateAsync(Venue venue, CancellationToken cancellationToken = default);
     
     Task<Result<IReadOnlyList<Venue>, Error>> GetByPrefix(

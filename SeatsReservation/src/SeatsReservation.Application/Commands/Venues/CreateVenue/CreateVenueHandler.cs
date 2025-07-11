@@ -1,6 +1,6 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
-using SeatsReservation.Application.Interfaces.Repositories;
+using SeatsReservation.Application.Interfaces.Database;
 using SeatsReservation.Application.Shared.DTOs;
 using SeatsReservation.Domain.Entities.Venues;
 using SharedService.Core.Abstractions;
