@@ -17,10 +17,16 @@ public interface IVenuesRepository
     Task<Result<Venue, Error>> GetById(
         Id<Venue> id, CancellationToken cancellationToken);
 
+    Task<Result<Venue, Error>> GetByIdWithSeats(
+        Id<Venue> id, CancellationToken cancellationToken = default);
+
     Task SaveAsync(CancellationToken cancellationToken = default);
 
     Task UpdateAsync(Venue venue, CancellationToken cancellationToken = default);
     
     Task<Result<IReadOnlyList<Venue>, Error>> GetByPrefix(
         string prefix, CancellationToken cancellationToken = default);
+
+    Task<UnitResult<Error>> DeleteSeatsByVenueId(
+        Id<Venue> id, CancellationToken cancellationToken = default);
 }

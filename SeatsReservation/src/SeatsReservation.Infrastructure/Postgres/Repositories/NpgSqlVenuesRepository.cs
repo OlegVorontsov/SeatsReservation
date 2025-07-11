@@ -15,20 +15,28 @@ public class NpgSqlVenuesRepository(
     ILogger<NpgSqlVenuesRepository> logger) : IVenuesRepository
 {
 
-    public async Task<Result<Venue, Error>> GetById(
+    public Task<Result<Venue, Error>> GetById(
         Id<Venue> id, CancellationToken cancellationToken) =>
         throw new NotImplementedException();
-    
-    public async Task SaveAsync(CancellationToken cancellationToken) =>
+
+    public Task<Result<Venue, Error>> GetByIdWithSeats(
+        Id<Venue> id, CancellationToken cancellationToken = default) =>
+        throw new NotImplementedException();
+
+    public Task SaveAsync(CancellationToken cancellationToken) =>
         throw new NotImplementedException();
     
-    public async Task UpdateAsync(Venue venue, CancellationToken cancellationToken = default) =>
+    public Task UpdateAsync(Venue venue, CancellationToken cancellationToken = default) =>
         throw new NotImplementedException();
     
-    public async Task<Result<IReadOnlyList<Venue>, Error>> GetByPrefix(
+    public Task<Result<IReadOnlyList<Venue>, Error>> GetByPrefix(
         string prefix, CancellationToken cancellationToken = default) =>
         throw new NotImplementedException();
     
+    public Task<UnitResult<Error>> DeleteSeatsByVenueId(
+        Id<Venue> id, CancellationToken cancellationToken = default) =>
+        throw new NotImplementedException();
+
     public async Task<Result<Venue, Error>> CreateAsync(Venue venue, CancellationToken cancellationToken)
     {
         using var connection = await connectionFactory.CreateConnectionAsync(cancellationToken);

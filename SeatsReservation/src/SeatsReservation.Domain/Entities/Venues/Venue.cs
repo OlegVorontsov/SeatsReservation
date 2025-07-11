@@ -54,12 +54,14 @@ public class Venue
         return UnitResult.Success<Error>();
     }
     
-    public UnitResult<Error> UpdateSeats(List<Seat> seats)
+    public UnitResult<Error> UpdateSeats(IEnumerable<Seat> seats)
     {
-        if (seats.Count > SeatsLimit)
+        var seatsList = seats.ToList();
+        
+        if (seatsList.Count() > SeatsLimit)
             return Error.Validation("venue.seats.limit", "Seats limit has been exceeded");
         
-        _seats = seats;
+        _seats = seatsList.ToList();
         return UnitResult.Success<Error>();
     }
 

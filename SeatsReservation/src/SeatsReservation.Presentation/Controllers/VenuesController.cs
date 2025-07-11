@@ -34,7 +34,7 @@ public class VenuesController : ApplicationController
         await handler.Handle(command, cancellationToken);
     
     [HttpPatch("seats")]
-    public async Task<EndpointResult<VenueDto>> UpdateSeats(
+    public async Task<EndpointResult<Guid>> UpdateSeats(
         [FromServices] UpdateSeatsHandler handler,
         [FromBody] UpdateSeatsCommand command,
         CancellationToken cancellationToken = default) =>

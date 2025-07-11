@@ -19,6 +19,17 @@ public class EfCoreVenuesRepository(
         Id<Venue> id, CancellationToken cancellationToken)
     {
         var venue = await context.Venues
+            .FirstOrDefaultAsync(v => v.Id == id, cancellationToken);
+        
+        return venue is null
+            ? Error.NotFound("venue.not.found", "Venue not found")
+            : venue;
+    }
+    
+    public async Task<Result<Venue, Error>> GetByIdWithSeats(
+        Id<Venue> id, CancellationToken cancellationToken)
+    {
+        var venue = await context.Venues
             .Include(v => v.Seats)
             .FirstOrDefaultAsync(v => v.Id == id, cancellationToken);
         
@@ -75,5 +86,15 @@ public class EfCoreVenuesRepository(
         context.Venues.Update(venue);
 
         await context.SaveChangesAsync(cancellationToken);
+    }
+    
+    public async Task<UnitResult<Error>> DeleteSeatsByVenueId(
+        Id<Venue> id, CancellationToken cancellationToken)
+    {
+        await context.Seats
+            .Where(s => s.Venue.Id == id)
+            .ExecuteDeleteAsync(cancellationToken);
+
+        return UnitResult.Success<Error>();
     }
 }

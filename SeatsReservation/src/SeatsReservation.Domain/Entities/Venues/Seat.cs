@@ -13,6 +13,7 @@ public class Seat
     public int RowNumber { get; private set; }
     
     public Venue Venue { get; private set; } = null!;
+    public Id<Venue> VenueId { get; private set; } = null!;
     
     //Ef Core
     private Seat() { }
@@ -24,6 +25,14 @@ public class Seat
         SeatNumber = seatNumber;
         RowNumber = rowNumber;
     }
+    
+    private Seat(Id<Seat> id, Id<Venue> venueId, int seatNumber, int rowNumber)
+    {
+        Id = id;
+        VenueId = venueId;
+        SeatNumber = seatNumber;
+        RowNumber = rowNumber;
+    }
 
     public static Result<Seat, Error> Create(Venue venue, int seatNumber, int rowNumber)
     {
@@ -31,5 +40,13 @@ public class Seat
             return Error.Validation("seat.number", "Row number and seat number must be greater than zero");
         
         return new Seat(Id<Seat>.Create(Guid.NewGuid()), venue, seatNumber, rowNumber);
+    }
+    
+    public static Result<Seat, Error> Create(Id<Venue> venueId, int seatNumber, int rowNumber)
+    {
+        if (seatNumber <= 0 || rowNumber <= 0)
+            return Error.Validation("seat.number", "Row number and seat number must be greater than zero");
+        
+        return new Seat(Id<Seat>.Create(Guid.NewGuid()), venueId, seatNumber, rowNumber);
     }
 }
