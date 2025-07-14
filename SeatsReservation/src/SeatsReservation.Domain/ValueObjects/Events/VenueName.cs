@@ -34,4 +34,15 @@ public record VenueName
         
         return new VenueName(name, prefix);
     }
+    
+    public static Result<VenueName, Error> CreateWithoutPrefix(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+            return Error.Validation("VenueName.name", "Name is required");
+        
+        if (name.Length > Constants.Length._50)
+            return Error.Validation("VenueName.name", "Name must be less than 50 characters");
+        
+        return new VenueName(name, "");
+    }
 }

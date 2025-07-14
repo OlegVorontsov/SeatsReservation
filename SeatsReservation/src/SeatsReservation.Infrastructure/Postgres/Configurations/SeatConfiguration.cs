@@ -20,6 +20,12 @@ public class SeatConfiguration : IEntityTypeConfiguration<Seat>
                    value => Id<Seat>.Create(value))
                .HasColumnName("id");
         
+        builder.Property(s => s.VenueId)
+            .HasConversion(
+                venueId => venueId.Value,
+                value => Id<Venue>.Create(value))
+            .HasColumnName("venue_id");
+        
         builder.Property(s => s.SeatNumber)
                .IsRequired()
                .HasColumnName("seat_number");
@@ -27,7 +33,5 @@ public class SeatConfiguration : IEntityTypeConfiguration<Seat>
         builder.Property(s => s.RowNumber)
                .IsRequired()
                .HasColumnName("row_number");
-        
-
     }
 }

@@ -30,7 +30,7 @@ public class Venue
     }
     
     public static Result<Venue, Error> Create(
-        string name, string prefix, int seatsLimit)
+        string name, string prefix, int seatsLimit, Id<Venue>? venueId = null)
     {
         if (seatsLimit <= 0)
             return Error.Validation("venue.seatsLimit", "Seats limit must be greater than zero");
@@ -39,7 +39,10 @@ public class Venue
         if (venueNameResult.IsFailure)
             return venueNameResult.Error;
         
-        return new Venue(Id<Venue>.Create(Guid.NewGuid()), venueNameResult.Value, seatsLimit);
+        return new Venue
+            (venueId ?? Id<Venue>.Create(Guid.NewGuid()),
+                venueNameResult.Value,
+                seatsLimit);
     }
 
     public UnitResult<Error> AddSeat(Seat seat)
@@ -48,6 +51,28 @@ public class Venue
             return Error.Validation("venue.seats.limit", "Seats limit has been exceeded");
         
         _seats.Add(seat);
+        return UnitResult.Success<Error>();
+    }
+    
+    public UnitResult<Error> UpdateSeats(IEnumerable<Seat> seats)
+    {
+        var seatsList = seats.ToList();
+        
+        if (seatsList.Count() > SeatsLimit)
+            return Error.Validation("venue.seats.limit", "Seats limit has been exceeded");
+        
+        _seats = seatsList.ToList();
+        return UnitResult.Success<Error>();
+    }
+
+    public UnitResult<Error> UpdateName(string name)
+    {
+        var venueNameResult = VenueName.Create(name, Name.Prefix);
+        if (venueNameResult.IsFailure)
+            return Error.Failure("create.venue.name", "Fail to create new venue name");
+        
+        Name = venueNameResult.Value;
+        
         return UnitResult.Success<Error>();
     }
 

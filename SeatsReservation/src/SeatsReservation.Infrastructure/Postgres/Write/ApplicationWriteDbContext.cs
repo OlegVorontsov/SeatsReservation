@@ -9,6 +9,7 @@ public class ApplicationWriteDbContext(string connectionString) : DbContext
     public const string POSTGRES_CONFIGURATION = "Postgres";
 
     public DbSet<Venue> Venues => Set<Venue>();
+    public DbSet<Seat> Seats => Set<Seat>();
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

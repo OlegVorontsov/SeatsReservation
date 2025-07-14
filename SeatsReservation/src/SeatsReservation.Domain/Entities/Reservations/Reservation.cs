@@ -1,6 +1,8 @@
+using CSharpFunctionalExtensions;
 using SeatsReservation.Domain.Entities.Events;
 using SeatsReservation.Domain.Entities.Venues;
 using SharedService.SharedKernel.BaseClasses;
+using SharedService.SharedKernel.Errors;
 
 namespace SeatsReservation.Domain.Entities.Reservations;
 
@@ -23,7 +25,7 @@ public class Reservation
     //Ef Core
     private Reservation() { }
 
-    public Reservation(Id<Reservation> id, Id<Event> eventId, Guid userId, IEnumerable<Guid> seatIds)
+    private Reservation(Id<Reservation> id, Id<Event> eventId, Guid userId, IEnumerable<Guid> seatIds)
     {
         Id = id;
         EventId = eventId;
@@ -37,5 +39,20 @@ public class Reservation
             .ToList();
         
         _reservedSeats = reservedSeats;
+    }
+    
+    public static Result<Reservation, Error> Create(
+        Guid eventId, Guid userId, IEnumerable<Guid> seatsIds)
+    {
+        var seatsIdsList = seatsIds.ToList();
+        
+        if (seatsIdsList.Count == 0)
+            return Error.Validation("reservation.seats", "At least one seat must be selected");
+        
+        return new Reservation(
+            Id<Reservation>.Create(Guid.NewGuid()),
+            Id<Event>.Create(eventId),
+            userId,
+            seatsIdsList);
     }
 }
