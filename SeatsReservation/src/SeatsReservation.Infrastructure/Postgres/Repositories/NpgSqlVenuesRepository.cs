@@ -1,6 +1,7 @@
 using CSharpFunctionalExtensions;
 using Dapper;
 using Microsoft.Extensions.Logging;
+using SeatsReservation.Application.Commands.Venues;
 using SeatsReservation.Application.Interfaces.Database;
 using SeatsReservation.Domain.Entities.Venues;
 using SeatsReservation.Domain.ValueObjects.Events;

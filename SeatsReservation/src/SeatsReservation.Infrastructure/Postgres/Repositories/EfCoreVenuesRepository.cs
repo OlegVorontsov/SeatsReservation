@@ -2,6 +2,7 @@ using CSharpFunctionalExtensions;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using SeatsReservation.Application.Commands.Venues;
 using SeatsReservation.Application.Interfaces.Database;
 using SeatsReservation.Domain.Entities.Venues;
 using SeatsReservation.Domain.ValueObjects.Events;
