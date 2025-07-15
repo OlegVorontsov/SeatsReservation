@@ -4,7 +4,7 @@ using SeatsReservation.Domain.ValueObjects.Events;
 using SharedService.SharedKernel.BaseClasses;
 using SharedService.SharedKernel.Errors;
 
-namespace SeatsReservation.Application.Interfaces.Database;
+namespace SeatsReservation.Application.Commands.Venues;
 
 public interface IVenuesRepository
 {

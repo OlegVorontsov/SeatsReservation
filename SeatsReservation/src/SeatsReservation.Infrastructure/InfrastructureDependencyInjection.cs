@@ -1,5 +1,9 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SeatsReservation.Application.Commands.Events;
+using SeatsReservation.Application.Commands.Reservations;
+using SeatsReservation.Application.Commands.Seats;
+using SeatsReservation.Application.Commands.Venues;
 using SeatsReservation.Application.Interfaces.Database;
 using SeatsReservation.Infrastructure.Postgres.Factories;
 using SeatsReservation.Infrastructure.Postgres.Interfaces;
@@ -34,6 +38,9 @@ public static class InfrastructureDependencyInjection
         
         //services.AddScoped<IVenuesRepository, NpgSqlVenuesRepository>();
         services.AddScoped<IVenuesRepository, EfCoreVenuesRepository>();
+        services.AddScoped<IReservationsRepository, ReservationsRepository>();
+        services.AddScoped<IEventsRepository, EventsRepository>();
+        services.AddScoped<ISeatsRepository, SeatsRepository>();
 
         //services.AddScoped<IUnitOfWork, DirectoryServiceUnitOfWork>();
 
