@@ -8,6 +8,10 @@ public class EventDetails
     
     public string? Description { get;  private set; }
     
+    public DateTimeOffset? LastReservation { get; private set; }
+    
+    public uint Version { get; private set; }
+    
     //Ef Core
     private EventDetails() { }
 
@@ -16,4 +20,6 @@ public class EventDetails
         Capacity = capacity;
         Description = description;
     }
+    
+    public void ReserveSeat() => LastReservation = DateTimeOffset.UtcNow;
 }

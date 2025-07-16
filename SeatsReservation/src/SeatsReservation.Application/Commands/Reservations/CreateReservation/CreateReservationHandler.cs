@@ -18,7 +18,8 @@ public class CreateReservationHandler(
     IValidator<CreateReservationCommand> validator,
     IReservationsRepository reservationsRepository,
     IEventsRepository eventsRepository,
-    ISeatsRepository seatsRepository)
+    ISeatsRepository seatsRepository,
+    ITransactionManager transactionManager)
     : ICommandHandler<ReservationDto, CreateReservationCommand>
 {
     public async Task<Result<ReservationDto, ErrorList>> Handle(
@@ -32,31 +33,70 @@ public class CreateReservationHandler(
         
         var eventId = Id<Event>.Create(command.EventId);
         
+        var transactionScopeResult = await transactionManager.BeginTransactionAsync(cancellationToken);
+        if (transactionScopeResult.IsFailure)
+            return transactionScopeResult.Error.ToErrors();
+
+        using var transactionScope = transactionScopeResult.Value;
+        
         var eventResult = await eventsRepository.GetById(
             eventId, cancellationToken);
         if (eventResult.IsFailure)
+        {
+            transactionScope.Rollback();
             return eventResult.Error.ToErrors();
+        }
         
-        var isAvailable = eventResult.Value.IsAvailableForReservation();
-        if (isAvailable == false)
-            return Error.Validation("event.not.available", "Event is not available for reservation").ToErrors();
+        var reservedSeatsCount = await reservationsRepository.GetReservedSeatsCount(eventId, cancellationToken);
+
+        if (eventResult.Value.IsAvailableForReservation(reservedSeatsCount + command.SeatsIds.Count()) == false)
+        {
+            transactionScope.Rollback();
+            return Error.Failure("reservation.fail", "Reservation is too large").ToErrors();
+        }
         
         var seatIds = command.SeatsIds.Select(Id<Seat>.Create).ToList();
         var seats = await seatsRepository.GetByIds(seatIds, cancellationToken);
         if (seats.Any(seat => seat.VenueId != eventResult.Value.VenueId) || seats.Count == 0)
+        {
+            transactionScope.Rollback();
             return Error.Conflict("seats.conflict", "Seats doesn't belong to venue").ToErrors();
+        }
         
-        var isSeatsReserved = await reservationsRepository
+        // проверка не нужна тк был добавлен индекс в ReservationSeatConfiguration
+        /*var isSeatsReserved = await reservationsRepository
             .IsAnySeatsReserved(eventId, seatIds, cancellationToken);
         if (isSeatsReserved)
-            return Error.Conflict("seats.conflict", "Seats already reserved").ToErrors();
+            return Error.Conflict("seats.conflict", "Seats already reserved").ToErrors();*/
         
         var reservationResult = Reservation.Create(
             command.EventId, command.UserId, command.SeatsIds);
         if (reservationResult.IsFailure)
+        {
+            transactionScope.Rollback();
             return reservationResult.Error.ToErrors();
+        }
         
-        await reservationsRepository.CreateAsync(reservationResult.Value, cancellationToken);
+        var createResult = await reservationsRepository.CreateAsync(reservationResult.Value, cancellationToken);
+        if (createResult.IsFailure)
+        {
+            transactionScope.Rollback();
+            return createResult.Error.ToErrors();
+        }
+        
+        // оптимистичная блокировка
+        eventResult.Value.Details.ReserveSeat();
+        
+        var saveResult = await transactionManager.SaveChangesAsync(cancellationToken);
+        if (saveResult.IsFailure)
+        {
+            transactionScope.Rollback();
+            return saveResult.Error.ToErrors();
+        }
+
+        var commitedResult = transactionScope.Commit();
+        if (commitedResult.IsFailure)
+            return commitedResult.Error.ToErrors();
         
         return ReservationDto.FromDomainEntity(reservationResult.Value);
     }

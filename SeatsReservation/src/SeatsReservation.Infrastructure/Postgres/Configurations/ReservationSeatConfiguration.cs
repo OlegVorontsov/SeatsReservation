@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using SeatsReservation.Domain.Entities.Events;
 using SeatsReservation.Domain.Entities.Reservations;
 using SeatsReservation.Domain.Entities.Venues;
 using SharedService.SharedKernel.BaseClasses;
@@ -34,14 +35,26 @@ public class ReservationSeatConfiguration : IEntityTypeConfiguration<Reservation
                .OnDelete(DeleteBehavior.Cascade);
         
         builder.Property(rs => rs.SeatId)
+               .IsRequired()
                .HasConversion(
                       id => id.Value,
                       value => Id<Seat>.Create(value))
                .HasColumnName("seat_id");
         
+        builder.Property(rs => rs.EventId)
+               .IsRequired()
+               .HasConversion(
+                      id => id.Value,
+                      value => Id<Event>.Create(value))
+               .HasColumnName("event_id");
+        
         // DateTimeOffset don't need conversion
         builder.Property(rs => rs.ReservationDate)
                .IsRequired()
                .HasColumnName("reservation_date");
+
+        // уникальность для избежания повторного бронирования места
+        builder.HasIndex(rs => new { rs.SeatId, rs.EventId })
+               .IsUnique();
     }
 }
