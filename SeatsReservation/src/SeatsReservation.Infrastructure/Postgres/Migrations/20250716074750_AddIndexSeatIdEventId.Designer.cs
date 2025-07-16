@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SeatsReservation.Infrastructure.Postgres.Write;
@@ -12,9 +13,11 @@ using SeatsReservation.Infrastructure.Postgres.Write;
 namespace SeatsReservation.Infrastructure.Postgres.Migrations
 {
     [DbContext(typeof(ApplicationWriteDbContext))]
-    partial class ApplicationWriteDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250716074750_AddIndexSeatIdEventId")]
+    partial class AddIndexSeatIdEventId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

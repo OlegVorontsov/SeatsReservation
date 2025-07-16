@@ -19,5 +19,8 @@ public interface IReservationsRepository
         Id<Event> eventId, IEnumerable<Id<Seat>> seatIds,
         CancellationToken cancellationToken = default);
 
+    Task<int> GetReservedSeatsCount(
+        Id<Event> eventId, CancellationToken cancellationToken = default);
+
     Task UpdateAsync(Reservation venue, CancellationToken cancellationToken = default);
 }

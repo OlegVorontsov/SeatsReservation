@@ -24,7 +24,8 @@ public class EventsRepository(
         Id<Event> id, CancellationToken cancellationToken = default)
     {
         var @event = await context.Events
-            .FirstOrDefaultAsync(r => r.Id == id, cancellationToken);
+            .Include(e => e.Details)
+            .FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
         
         return @event is null
             ? Error.NotFound("event.not.found", "Event not found")

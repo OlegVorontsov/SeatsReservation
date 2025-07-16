@@ -52,9 +52,10 @@ public class Event
         EventInfo = eventInfo;
     }
 
-    public bool IsAvailableForReservation() =>
+    public bool IsAvailableForReservation(int capacitySum) =>
         Status == EventStatus.Planned &&
-        StartedAt > DateTimeOffset.UtcNow;
+        StartedAt > DateTimeOffset.UtcNow &&
+        capacitySum <= Details.Capacity;
 
     private static Result<EventDetails, Error> Validate(
         string name,
