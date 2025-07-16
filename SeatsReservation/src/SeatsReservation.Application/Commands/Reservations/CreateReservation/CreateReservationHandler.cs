@@ -83,6 +83,16 @@ public class CreateReservationHandler(
             transactionScope.Rollback();
             return createResult.Error.ToErrors();
         }
+        
+        // оптимистичная блокировка
+        eventResult.Value.Details.ReserveSeat();
+        
+        var saveResult = await transactionManager.SaveChangesAsync(cancellationToken);
+        if (saveResult.IsFailure)
+        {
+            transactionScope.Rollback();
+            return saveResult.Error.ToErrors();
+        }
 
         var commitedResult = transactionScope.Commit();
         if (commitedResult.IsFailure)

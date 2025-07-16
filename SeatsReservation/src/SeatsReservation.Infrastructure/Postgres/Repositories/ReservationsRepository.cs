@@ -58,6 +58,11 @@ public class ReservationsRepository(
     public async Task<int> GetReservedSeatsCount(
         Id<Event> eventId, CancellationToken cancellationToken = default)
     {
+        // создание пессимистичной блокировки
+        /*await context.Database.ExecuteSqlAsync(
+            $"SELECT capacity FROM seats_reservation.events WHERE id = {eventId} FOR UPDATE",
+            cancellationToken);*/
+        
         return await context.Reservations
             .Where(r => r.EventId == eventId)
             .Where(r => r.Status == ReservationStatus.Confirmed || r.Status == ReservationStatus.Pending)
