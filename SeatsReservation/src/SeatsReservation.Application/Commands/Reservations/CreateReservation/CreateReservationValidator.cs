@@ -17,7 +17,7 @@ public class CreateReservationValidator :
         RuleFor(c => c.UserId)
             .NotNull()
             .NotEmpty()
-            .WithError(Errors.General.ValueIsRequired("EventId"));
+            .WithError(Errors.General.ValueIsRequired("UserId"));
         
         RuleFor(c => c.SeatsIds)
             .ForEach(s => s.NotNull().NotEmpty())
