@@ -10,6 +10,9 @@ public interface IEventsRepository
     Task<Result<Event, Error>> GetById(
         Id<Event> id, CancellationToken cancellationToken = default);
 
+    Task<Result<Event, Error>> GetByIdWithLock(
+        Id<Event> id, CancellationToken cancellationToken = default);
+
     Task<Result<Event, Error>> CreateAsync(
         Event entity, CancellationToken cancellationToken = default);
 

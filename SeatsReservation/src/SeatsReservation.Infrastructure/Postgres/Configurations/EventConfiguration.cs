@@ -31,17 +31,6 @@ public class EventConfiguration : IEntityTypeConfiguration<Event>
                .IsRequired()
                .HasColumnName("event_date");
         
-        builder.ComplexProperty(e => e.Details, db =>
-        {
-            db.Property(d => d.Capacity)
-                .IsRequired()
-                .HasColumnName("capacity");
-
-            db.Property(d => d.Description)
-                .IsRequired(false)
-                .HasColumnName("description");
-        });
-        
         builder.HasOne<Venue>()
                .WithMany()
                .HasForeignKey(v => v.VenueId)

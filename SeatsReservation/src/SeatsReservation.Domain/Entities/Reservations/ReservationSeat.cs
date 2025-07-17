@@ -4,6 +4,7 @@ using SharedService.SharedKernel.BaseClasses;
 
 namespace SeatsReservation.Domain.Entities.Reservations;
 
+// таблица связи "многие - ко многим"
 public class ReservationSeat
 {
     public Id<ReservationSeat> Id { get; }

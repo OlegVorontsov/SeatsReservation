@@ -1,9 +1,10 @@
+using SharedService.SharedKernel.BaseClasses;
+
 namespace SeatsReservation.Domain.Entities.Events;
 
 public class EventDetails
 {
-    public Guid EventId { get; } = Guid.Empty!;
-    
+    public Id<Event> EventId { get; }
     public int Capacity { get; private set; }
     
     public string? Description { get;  private set; }

@@ -1,13 +1,10 @@
 using CSharpFunctionalExtensions;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SeatsReservation.Application.Commands.Reservations;
-using SeatsReservation.Application.Interfaces.Database;
 using SeatsReservation.Domain.Entities.Events;
 using SeatsReservation.Domain.Entities.Reservations;
 using SeatsReservation.Domain.Entities.Venues;
-using SeatsReservation.Domain.ValueObjects.Events;
 using SeatsReservation.Infrastructure.Postgres.Write;
 using SharedService.SharedKernel.BaseClasses;
 using SharedService.SharedKernel.Errors;

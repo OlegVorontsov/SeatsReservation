@@ -7,31 +7,29 @@ using SeatsReservation.Application.Shared.DTOs;
 using SeatsReservation.Domain.Entities.Events;
 using SeatsReservation.Domain.Entities.Reservations;
 using SeatsReservation.Domain.Entities.Venues;
+using SeatsReservation.Domain.Helpers;
 using SharedService.Core.Abstractions;
 using SharedService.Core.Validation;
 using SharedService.SharedKernel.BaseClasses;
 using SharedService.SharedKernel.Errors;
 
-namespace SeatsReservation.Application.Commands.Reservations.CreateReservation;
+namespace SeatsReservation.Application.Commands.Reservations.ReserveAdjacentSeats;
 
-public class CreateReservationHandler(
-    IValidator<CreateReservationCommand> validator,
+public class ReserveAdjacentSeatsHandler(
+    IValidator<ReserveAdjacentSeatsCommand> validator,
     IReservationsRepository reservationsRepository,
     IEventsRepository eventsRepository,
     ISeatsRepository seatsRepository,
     ITransactionManager transactionManager)
-    : ICommandHandler<ReservationDto, CreateReservationCommand>
+    : ICommandHandler<ReservationDto, ReserveAdjacentSeatsCommand>
 {
     public async Task<Result<ReservationDto, ErrorList>> Handle(
-        CreateReservationCommand command,
-        CancellationToken cancellationToken = default)
+        ReserveAdjacentSeatsCommand command, CancellationToken cancellationToken = default)
     {
         var validationResult = await validator.ValidateAsync(
             command, cancellationToken);
         if (validationResult.IsValid == false)
             return validationResult.ToList();
-        
-        var eventId = Id<Event>.Create(command.EventId);
         
         var transactionResult = await transactionManager.BeginTransactionAsync(cancellationToken);
         if (transactionResult.IsFailure)
@@ -39,38 +37,39 @@ public class CreateReservationHandler(
 
         using var transaction = transactionResult.Value;
         
-        var eventResult = await eventsRepository.GetByIdWithLock(
-            eventId, cancellationToken);
+        var eventId = Id<Event>.Create(command.EventId);
+        
+        var eventResult = await eventsRepository.GetByIdWithLock(eventId, cancellationToken);
         if (eventResult.IsFailure)
         {
             transaction.Rollback();
             return eventResult.Error.ToErrors();
         }
         
-        var reservedSeatsCount = await reservationsRepository.GetReservedSeatsCount(eventId, cancellationToken);
-
-        if (eventResult.Value.IsAvailableForReservation(reservedSeatsCount + command.SeatsIds.Count()) == false)
-        {
-            transaction.Rollback();
-            return Error.Failure("reservation.fail", "Reservation is too large").ToErrors();
-        }
+        // получаем все доступные места из нужного ряда
+        var availableSeats = await seatsRepository.GetAvailableSeats(
+            Id<Venue>.Create(command.VenueId),
+            eventId, command.PreferredRowNumber, cancellationToken);
+        if (availableSeats.Count == 0)
+            return Error.NotFound("available.seats", "There are no available seats").ToErrors();
         
-        var seatIds = command.SeatsIds.Select(Id<Seat>.Create).ToList();
-        var seats = await seatsRepository.GetByIds(seatIds, cancellationToken);
-        if (seats.Any(seat => seat.VenueId != eventResult.Value.VenueId) || seats.Count == 0)
-        {
-            transaction.Rollback();
-            return Error.Conflict("seats.conflict", "Seats doesn't belong to venue").ToErrors();
-        }
+        var selectedSeats = command.PreferredRowNumber.HasValue ?
+            SeatsHelper.FindAdjacentSeatsInPreferredRow(
+                availableSeats, command.RequiredSeatsCount, command.PreferredRowNumber.Value) :
+            SeatsHelper.FindBestAdjacentSeats(availableSeats, command.RequiredSeatsCount);
         
-        // проверка не нужна тк был добавлен индекс в ReservationSeatConfiguration
-        /*var isSeatsReserved = await reservationsRepository
-            .IsAnySeatsReserved(eventId, seatIds, cancellationToken);
-        if (isSeatsReserved)
-            return Error.Conflict("seats.conflict", "Seats already reserved").ToErrors();*/
+        if (selectedSeats.Count == 0)
+            return Error.NotFound("selected.seats",
+                $"Could not find {command.RequiredSeatsCount} adjacent available seats").ToErrors();
+        
+        if (selectedSeats.Count < command.RequiredSeatsCount)
+            return Error.NotFound("selected.seats",
+                $"Only {selectedSeats.Count} adjacent seats available").ToErrors();
+        
+        var seatIds = selectedSeats.Select(s => s.Id.Value);
         
         var reservationResult = Reservation.Create(
-            command.EventId, command.UserId, command.SeatsIds);
+            command.EventId, command.UserId, seatIds);
         if (reservationResult.IsFailure)
         {
             transaction.Rollback();
@@ -84,16 +83,6 @@ public class CreateReservationHandler(
             return createResult.Error.ToErrors();
         }
         
-        // оптимистичная блокировка
-        eventResult.Value.Details.ReserveSeat();
-        
-        var saveResult = await transactionManager.SaveChangesAsync(cancellationToken);
-        if (saveResult.IsFailure)
-        {
-            transaction.Rollback();
-            return saveResult.Error.ToErrors();
-        }
-
         var commitedResult = transaction.Commit();
         if (commitedResult.IsFailure)
             return commitedResult.Error.ToErrors();

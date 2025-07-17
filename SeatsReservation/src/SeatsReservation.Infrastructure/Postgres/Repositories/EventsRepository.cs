@@ -32,6 +32,20 @@ public class EventsRepository(
             : @event;
     }
     
+    public async Task<Result<Event, Error>> GetByIdWithLock(
+        Id<Event> id, CancellationToken cancellationToken = default)
+    {
+        var @event = await context.Events
+                // пессимистичная блокировка
+            .FromSql($"SELECT * FROM seats_reservation.events WHERE id = {id.Value} FOR UPDATE")
+            .Include(e => e.Details)
+            .FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
+        
+        return @event is null
+            ? Error.NotFound("event.not.found", "Event not found")
+            : @event;
+    }
+    
     public async Task<Result<Event, Error>> CreateAsync(
         Event entity, CancellationToken cancellationToken = default)
     {
