@@ -8,6 +8,7 @@ using SeatsReservation.Application.Interfaces.Database;
 using SeatsReservation.Infrastructure.Postgres.Factories;
 using SeatsReservation.Infrastructure.Postgres.Interfaces;
 using SeatsReservation.Infrastructure.Postgres.Repositories;
+using SeatsReservation.Infrastructure.Postgres.Seeding;
 using SeatsReservation.Infrastructure.Postgres.Write;
 using SharedService.Core.Database.Read;
 
@@ -41,6 +42,8 @@ public static class InfrastructureDependencyInjection
         services.AddScoped<IReservationsRepository, ReservationsRepository>();
         services.AddScoped<IEventsRepository, EventsRepository>();
         services.AddScoped<ISeatsRepository, SeatsRepository>();
+
+        services.AddScoped<ISeeder, ReservationSeeder>();
 
         //services.AddScoped<IUnitOfWork, DirectoryServiceUnitOfWork>();
 

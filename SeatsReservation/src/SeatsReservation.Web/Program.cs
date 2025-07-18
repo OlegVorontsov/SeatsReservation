@@ -8,6 +8,6 @@ var configuration = builder.Configuration;
 services.AddProgramDependencies(configuration);
 
 var app = builder.Build();
-await app.Configure();
+await app.Configure(args);
 
 app.Run();

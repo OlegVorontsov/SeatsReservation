@@ -1,8 +1,10 @@
+using SeatsReservation.Infrastructure.Postgres.Seeding;
+
 namespace SeatsReservation.Web;
 
 public static class AppConfiguration
 {
-    public static async Task<WebApplication> Configure(this WebApplication app)
+    public static async Task<WebApplication> Configure(this WebApplication app, string[] args)
     {
         app.UseStaticFiles();
         //app.UseExceptionMiddleware();
@@ -15,6 +17,12 @@ public static class AppConfiguration
                 options.SwaggerEndpoint("/openapi/v1.json", "SeatsReservation");
                 options.InjectStylesheet("/swagger-ui/SwaggerDark.css");
             });
+
+            if (args.Contains("--seed"))
+            {
+                //await app.Services.RunSeedingAsync();
+            }
+            
             //await app.ApplyMigrations();
         }
 
