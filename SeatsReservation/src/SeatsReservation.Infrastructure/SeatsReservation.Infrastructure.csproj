@@ -23,4 +23,8 @@
       <ProjectReference Include="..\SeatsReservation.Domain\SeatsReservation.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Postgres\Migrations\" />
+    </ItemGroup>
+
 </Project>

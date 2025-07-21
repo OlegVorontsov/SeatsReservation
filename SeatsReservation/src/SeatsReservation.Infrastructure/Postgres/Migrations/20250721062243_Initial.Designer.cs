@@ -13,8 +13,8 @@ using SeatsReservation.Infrastructure.Postgres.Write;
 namespace SeatsReservation.Infrastructure.Postgres.Migrations
 {
     [DbContext(typeof(ApplicationWriteDbContext))]
-    [Migration("20250716113543_AddEventDetailsRowVersion")]
-    partial class AddEventDetailsRowVersion
+    [Migration("20250721062243_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -60,34 +60,14 @@ namespace SeatsReservation.Infrastructure.Postgres.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("started_at");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("integer")
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text")
                         .HasColumnName("status");
 
                     b.Property<Guid>("VenueId")
                         .HasColumnType("uuid")
                         .HasColumnName("venue_id");
-
-                    b.ComplexProperty<Dictionary<string, object>>("Details", "SeatsReservation.Domain.Entities.Events.Event.Details#EventDetails", b1 =>
-                        {
-                            b1.IsRequired();
-
-                            b1.Property<int>("Capacity")
-                                .HasColumnType("integer")
-                                .HasColumnName("capacity");
-
-                            b1.Property<string>("Description")
-                                .HasColumnType("text")
-                                .HasColumnName("description");
-
-                            b1.Property<DateTimeOffset?>("LastReservation")
-                                .HasColumnType("timestamp with time zone")
-                                .HasColumnName("details_last_reservation");
-
-                            b1.Property<long>("Version")
-                                .HasColumnType("bigint")
-                                .HasColumnName("details_version");
-                        });
 
                     b.HasKey("Id")
                         .HasName("pk_events");
@@ -101,7 +81,6 @@ namespace SeatsReservation.Infrastructure.Postgres.Migrations
             modelBuilder.Entity("SeatsReservation.Domain.Entities.Events.EventDetails", b =>
                 {
                     b.Property<Guid>("EventId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("event_id");
 
@@ -193,6 +172,19 @@ namespace SeatsReservation.Infrastructure.Postgres.Migrations
                     b.ToTable("reservation_seats", "seats_reservation");
                 });
 
+            modelBuilder.Entity("SeatsReservation.Domain.Entities.Users.User", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_users");
+
+                    b.ToTable("users", "seats_reservation");
+                });
+
             modelBuilder.Entity("SeatsReservation.Domain.Entities.Venues.Seat", b =>
                 {
                     b.Property<Guid>("Id")
@@ -263,6 +255,16 @@ namespace SeatsReservation.Infrastructure.Postgres.Migrations
                         .HasConstraintName("fk_events_venues_venue_id");
                 });
 
+            modelBuilder.Entity("SeatsReservation.Domain.Entities.Events.EventDetails", b =>
+                {
+                    b.HasOne("SeatsReservation.Domain.Entities.Events.Event", null)
+                        .WithOne("Details")
+                        .HasForeignKey("SeatsReservation.Domain.Entities.Events.EventDetails", "EventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_event_details_events_event_id");
+                });
+
             modelBuilder.Entity("SeatsReservation.Domain.Entities.Reservations.ReservationSeat", b =>
                 {
                     b.HasOne("SeatsReservation.Domain.Entities.Venues.Seat", null)
@@ -282,6 +284,72 @@ namespace SeatsReservation.Infrastructure.Postgres.Migrations
                     b.Navigation("Reservation");
                 });
 
+            modelBuilder.Entity("SeatsReservation.Domain.Entities.Users.User", b =>
+                {
+                    b.OwnsOne("SeatsReservation.Domain.Entities.Users.UserDetails", "Details", b1 =>
+                        {
+                            b1.Property<Guid>("UserId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("Description")
+                                .IsRequired()
+                                .HasMaxLength(500)
+                                .HasColumnType("character varying(500)")
+                                .HasColumnName("description");
+
+                            b1.Property<string>("FIO")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.HasKey("UserId");
+
+                            b1.ToTable("users", "seats_reservation");
+
+                            b1.ToJson("details");
+
+                            b1.WithOwner()
+                                .HasForeignKey("UserId")
+                                .HasConstraintName("fk_users_users_id");
+
+                            b1.OwnsMany("SeatsReservation.Domain.Entities.Users.SocialNetwork", "Socials", b2 =>
+                                {
+                                    b2.Property<Guid>("UserDetailsUserId")
+                                        .HasColumnType("uuid");
+
+                                    b2.Property<int>("__synthesizedOrdinal")
+                                        .ValueGeneratedOnAdd()
+                                        .HasColumnType("integer");
+
+                                    b2.Property<string>("Link")
+                                        .IsRequired()
+                                        .HasMaxLength(500)
+                                        .HasColumnType("character varying(500)")
+                                        .HasColumnName("link");
+
+                                    b2.Property<string>("Name")
+                                        .IsRequired()
+                                        .HasMaxLength(500)
+                                        .HasColumnType("character varying(500)")
+                                        .HasColumnName("name");
+
+                                    b2.HasKey("UserDetailsUserId", "__synthesizedOrdinal");
+
+                                    b2.ToTable("users", "seats_reservation");
+
+                                    b2.ToJson("details");
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("UserDetailsUserId")
+                                        .HasConstraintName("fk_users_users_user_details_user_id");
+                                });
+
+                            b1.Navigation("Socials");
+                        });
+
+                    b.Navigation("Details")
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("SeatsReservation.Domain.Entities.Venues.Seat", b =>
                 {
                     b.HasOne("SeatsReservation.Domain.Entities.Venues.Venue", "Venue")
@@ -292,6 +360,12 @@ namespace SeatsReservation.Infrastructure.Postgres.Migrations
                         .HasConstraintName("fk_seats_venues_venue_id");
 
                     b.Navigation("Venue");
+                });
+
+            modelBuilder.Entity("SeatsReservation.Domain.Entities.Events.Event", b =>
+                {
+                    b.Navigation("Details")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("SeatsReservation.Domain.Entities.Reservations.Reservation", b =>

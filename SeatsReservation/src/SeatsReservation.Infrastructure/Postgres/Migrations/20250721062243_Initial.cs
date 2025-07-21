@@ -31,6 +31,19 @@ namespace SeatsReservation.Infrastructure.Postgres.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "users",
+                schema: "seats_reservation",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    details = table.Column<string>(type: "jsonb", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_users", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "venues",
                 schema: "seats_reservation",
                 columns: table => new
@@ -56,8 +69,9 @@ namespace SeatsReservation.Infrastructure.Postgres.Migrations
                     venue_id = table.Column<Guid>(type: "uuid", nullable: false),
                     event_type = table.Column<string>(type: "text", nullable: false),
                     event_info = table.Column<string>(type: "text", nullable: false),
-                    capacity = table.Column<int>(type: "integer", nullable: false),
-                    description = table.Column<string>(type: "text", nullable: true)
+                    started_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    ended_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    status = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -94,6 +108,29 @@ namespace SeatsReservation.Infrastructure.Postgres.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "event_details",
+                schema: "seats_reservation",
+                columns: table => new
+                {
+                    event_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    capacity = table.Column<int>(type: "integer", nullable: false),
+                    description = table.Column<string>(type: "text", nullable: true),
+                    last_reservation = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    xmin = table.Column<uint>(type: "xid", rowVersion: true, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_event_details", x => x.event_id);
+                    table.ForeignKey(
+                        name: "fk_event_details_events_event_id",
+                        column: x => x.event_id,
+                        principalSchema: "seats_reservation",
+                        principalTable: "events",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "reservation_seats",
                 schema: "seats_reservation",
                 columns: table => new
@@ -101,6 +138,7 @@ namespace SeatsReservation.Infrastructure.Postgres.Migrations
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     reservation_id = table.Column<Guid>(type: "uuid", nullable: false),
                     seat_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    event_id = table.Column<Guid>(type: "uuid", nullable: false),
                     reservation_date = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
@@ -135,10 +173,11 @@ namespace SeatsReservation.Infrastructure.Postgres.Migrations
                 column: "reservation_id");
 
             migrationBuilder.CreateIndex(
-                name: "ix_reservation_seats_seat_id",
+                name: "ix_reservation_seats_seat_id_event_id",
                 schema: "seats_reservation",
                 table: "reservation_seats",
-                column: "seat_id");
+                columns: new[] { "seat_id", "event_id" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "ix_seats_venue_id",
@@ -151,11 +190,19 @@ namespace SeatsReservation.Infrastructure.Postgres.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "events",
+                name: "event_details",
                 schema: "seats_reservation");
 
             migrationBuilder.DropTable(
                 name: "reservation_seats",
+                schema: "seats_reservation");
+
+            migrationBuilder.DropTable(
+                name: "users",
+                schema: "seats_reservation");
+
+            migrationBuilder.DropTable(
+                name: "events",
                 schema: "seats_reservation");
 
             migrationBuilder.DropTable(
