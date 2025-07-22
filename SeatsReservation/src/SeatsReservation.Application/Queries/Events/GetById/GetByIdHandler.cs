@@ -28,10 +28,18 @@ public class GetByIdHandler(
             .Include(e => e.Details)
             .Where(e => e.Id == Id<Event>.Create(query.EventId))
             .FirstOrDefaultAsync(cancellationToken);
-
+        
         if (eventResult is null)
             return Error.NotFound("not.found", "Event not found").ToErrors();
         
-        return EventDto.FromDomainEntity(eventResult);
+        var seats = await readDbContext.SeatRead
+            .Where(s => s.VenueId == eventResult.VenueId)
+            .OrderBy(s => s.RowNumber)
+            .ThenBy(s => s.SeatNumber)
+            .ToListAsync(cancellationToken);
+        
+        return EventDto.FromDomainEntity(
+            eventResult,
+            seats.Select(SeatDto.FromDomainEntity).ToList());
     }
 }

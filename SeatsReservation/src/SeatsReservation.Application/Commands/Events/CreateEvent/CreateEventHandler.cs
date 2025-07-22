@@ -51,6 +51,6 @@ public class CreateEventHandler(
         
         await eventsRepository.CreateAsync(eventResult.Value, cancellationToken);
         
-        return EventDto.FromDomainEntity(eventResult.Value);
+        return EventDto.FromDomainEntity(eventResult.Value, []);
     }
 }

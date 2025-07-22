@@ -13,5 +13,6 @@ public record VenueDto(
             entity.Id.Value,
             entity.Name.ToString(),
             entity.SeatsLimit,
-            entity.Seats.Select(s => new SeatDto(s.SeatNumber, s.RowNumber)));
+            entity.Seats
+                .Select(s => new SeatDto(s.Id.Value, s.VenueId.Value, s.SeatNumber, s.RowNumber)));
 }
