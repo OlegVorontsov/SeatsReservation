@@ -44,6 +44,10 @@ public class EventConfiguration : IEntityTypeConfiguration<Event>
                .HasConversion<string>()
                .HasColumnName("event_type");
         
+        builder.Property(e => e.Status)
+               .HasConversion<string>()
+               .HasColumnName("status");
+        
         builder.Property(e => e.EventInfo)
                .HasConversion(new EventInfoConverter())
                .HasColumnName("event_info");

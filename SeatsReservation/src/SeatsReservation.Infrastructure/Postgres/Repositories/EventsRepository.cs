@@ -20,18 +20,6 @@ public class EventsRepository(
     ILogger<EventsRepository> logger)
     : IEventsRepository
 {
-    public async Task<Result<Event, Error>> GetById(
-        Id<Event> id, CancellationToken cancellationToken = default)
-    {
-        var @event = await context.Events
-            .Include(e => e.Details)
-            .FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
-        
-        return @event is null
-            ? Error.NotFound("event.not.found", "Event not found")
-            : @event;
-    }
-    
     public async Task<Result<Event, Error>> GetByIdWithLock(
         Id<Event> id, CancellationToken cancellationToken = default)
     {
