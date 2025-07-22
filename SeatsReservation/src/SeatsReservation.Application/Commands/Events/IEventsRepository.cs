@@ -7,9 +7,6 @@ namespace SeatsReservation.Application.Commands.Events;
 
 public interface IEventsRepository
 {
-    Task<Result<Event, Error>> GetById(
-        Id<Event> id, CancellationToken cancellationToken = default);
-
     Task<Result<Event, Error>> GetByIdWithLock(
         Id<Event> id, CancellationToken cancellationToken = default);
 

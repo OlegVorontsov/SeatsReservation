@@ -1,12 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using SeatsReservation.Application.Interfaces.Database;
 using SeatsReservation.Domain.Entities.Events;
 using SeatsReservation.Domain.Entities.Reservations;
 using SeatsReservation.Domain.Entities.Venues;
 
 namespace SeatsReservation.Infrastructure.Postgres.Write;
 
-public class ApplicationWriteDbContext(string connectionString) : DbContext
+public class ApplicationWriteDbContext(string connectionString) : DbContext, IReadDbContext
 {
     public const string POSTGRES_CONFIGURATION = "Postgres";
 
@@ -15,6 +16,8 @@ public class ApplicationWriteDbContext(string connectionString) : DbContext
     public DbSet<Reservation> Reservations => Set<Reservation>();
     public DbSet<ReservationSeat> ReservationSeats => Set<ReservationSeat>();
     public DbSet<Event> Events => Set<Event>();
+
+    public IQueryable<Event> EventsRead => Set<Event>().AsNoTracking();
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

@@ -11,35 +11,13 @@ public record EventDto(
     string? EventDescription,
     Guid VenueId,
     string EventType,
-    string? Performer,
-    string? Speaker,
-    string? Topic,
-    string? Url,
+    string? EventInfo,
     DateTimeOffset StartedAt,
     DateTimeOffset EndedAt,
     string EventStatus)
 {
-    public static EventDto FromDomainEntity(Event entity)
-    {
-        string? performer = null;
-        string? speaker = null;
-        string? topic = null;
-        string? url = null;
-        
-        switch (entity.EventInfo)
-        {
-            case ConcertInfo concert:
-                performer = concert.Performer;
-                break;
-            case ConferenceInfo conference:
-                speaker = conference.Speaker;
-                topic = conference.Topic;
-                break;
-            case OnlineInfo online:
-                url = online.Url;
-                break;
-        }
-        return new EventDto(
+    public static EventDto FromDomainEntity(Event entity) =>
+        new(
             entity.Id.Value,
             entity.Name,
             entity.EventDate,
@@ -47,13 +25,8 @@ public record EventDto(
             entity.Details.Description,
             entity.VenueId.Value,
             entity.EventType.ToString(),
-            performer,
-            speaker,
-            topic,
-            url,
+            entity.EventInfo.ToString(),
             entity.StartedAt,
             entity.EndedAt,
-            entity.Status.ToString()
-        );
-    }
+            entity.Status.ToString());
 }
