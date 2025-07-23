@@ -15,9 +15,9 @@ public record EventDto(
     DateTimeOffset StartedAt,
     DateTimeOffset EndedAt,
     string EventStatus,
-    IReadOnlyList<SeatDto> Seats)
+    IReadOnlyList<AvailableSeatDto> Seats)
 {
-    public static EventDto FromDomainEntity(Event entity, IReadOnlyList<SeatDto> seats) =>
+    public static EventDto FromDomainEntity(Event entity, IReadOnlyList<AvailableSeatDto> seats) =>
         new(
             entity.Id.Value,
             entity.Name,

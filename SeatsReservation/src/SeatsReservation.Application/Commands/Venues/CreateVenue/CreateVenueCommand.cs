@@ -7,4 +7,4 @@ public record CreateVenueCommand(
     string Name,
     string Prefix,
     int SeatsLimit,
-    IEnumerable<SeatDto> Seats) : ICommand;
+    IEnumerable<AvailableSeatDto> Seats) : ICommand;

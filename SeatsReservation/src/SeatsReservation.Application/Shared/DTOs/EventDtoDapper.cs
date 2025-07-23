@@ -25,5 +25,5 @@ public record EventDtoDapper
 
     public string EventStatus { get; init; } = string.Empty;
 
-    public List<SeatDtoDapper> Seats { get; init; } = [];
+    public List<AvailableSeatDtoDapper> Seats { get; init; } = [];
 }

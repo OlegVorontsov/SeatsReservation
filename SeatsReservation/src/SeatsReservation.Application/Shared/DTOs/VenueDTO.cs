@@ -6,7 +6,7 @@ public record VenueDto(
     Guid Id,
     string VenueName,
     int SeatsLimit,
-    IEnumerable<SeatDto> Seats)
+    IEnumerable<AvailableSeatDto> Seats)
 {
     public static VenueDto FromDomainEntity(Venue entity)
         => new(
@@ -14,5 +14,10 @@ public record VenueDto(
             entity.Name.ToString(),
             entity.SeatsLimit,
             entity.Seats
-                .Select(s => new SeatDto(s.Id.Value, s.VenueId.Value, s.SeatNumber, s.RowNumber)));
+                .Select(s => new AvailableSeatDto(
+                    s.Id.Value,
+                    s.VenueId.Value,
+                    s.SeatNumber,
+                    s.RowNumber,
+                    true)));
 }

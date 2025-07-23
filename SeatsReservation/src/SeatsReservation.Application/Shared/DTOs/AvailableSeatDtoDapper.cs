@@ -1,6 +1,6 @@
 namespace SeatsReservation.Application.Shared.DTOs;
 
-public record SeatDtoDapper
+public record AvailableSeatDtoDapper
 {
     public Guid Id { get; init; }
 
@@ -9,4 +9,6 @@ public record SeatDtoDapper
     public int SeatNumber { get; init; }
 
     public int RowNumber { get; init; }
+    
+    public bool IsAvailable { get; init; }
 }
