@@ -22,4 +22,11 @@ public class EventsController : ApplicationController
         [FromRoute] Guid eventId,
         CancellationToken cancellationToken = default) =>
         await handler.Handle(new GetByIdQuery(eventId), cancellationToken);
+    
+    [HttpGet("{eventId:guid}/dapper")]
+    public async Task<EndpointResult<EventDtoDapper?>> GetByIdDapper(
+        [FromServices] GetByIdHandlerDapper handler,
+        [FromRoute] Guid eventId,
+        CancellationToken cancellationToken = default) =>
+        await handler.Handle(new GetByIdQuery(eventId), cancellationToken);
 }

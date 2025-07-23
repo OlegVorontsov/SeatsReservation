@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <PackageReference Include="CSharpFunctionalExtensions" Version="3.6.0" />
+      <PackageReference Include="Dapper" Version="2.1.66" />
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.6" />
       <PackageReference Include="sharedservice.core" Version="1.0.3" />
     </ItemGroup>

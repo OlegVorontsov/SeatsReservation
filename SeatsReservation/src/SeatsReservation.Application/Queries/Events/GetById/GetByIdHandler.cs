@@ -23,15 +23,27 @@ public class GetByIdHandler(
             query, cancellationToken);
         if (validationResult.IsValid == false)
             return validationResult.ToList();
+
+        var eventId = Id<Event>.Create(query.EventId);
         
         var eventResult = await readDbContext.EventsRead
             .Include(e => e.Details)
-            .Where(e => e.Id == Id<Event>.Create(query.EventId))
+            .Where(e => e.Id == eventId)
             .FirstOrDefaultAsync(cancellationToken);
-
+        
         if (eventResult is null)
             return Error.NotFound("not.found", "Event not found").ToErrors();
         
-        return EventDto.FromDomainEntity(eventResult);
+        var seats = await readDbContext.SeatRead
+            .Where(s => s.VenueId == eventResult.VenueId)
+            .OrderBy(s => s.RowNumber)
+            .ThenBy(s => s.SeatNumber)
+            .Select(s => AvailableSeatDto.FromDomainEntity(s,
+                !readDbContext.ReservationSeatRead
+                    .Any(rs => rs.SeatId == s.Id && rs.EventId == eventId)))
+            .ToListAsync(cancellationToken);
+        
+        return EventDto.FromDomainEntity(
+            eventResult, seats);
     }
 }

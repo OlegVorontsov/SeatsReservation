@@ -18,6 +18,10 @@ public class ApplicationWriteDbContext(string connectionString) : DbContext, IRe
     public DbSet<Event> Events => Set<Event>();
 
     public IQueryable<Event> EventsRead => Set<Event>().AsNoTracking();
+    public IQueryable<Venue> VenueRead => Set<Venue>().AsNoTracking();
+    public IQueryable<Seat> SeatRead => Set<Seat>().AsNoTracking();
+    public IQueryable<Reservation> ReservationRead => Set<Reservation>().AsNoTracking();
+    public IQueryable<ReservationSeat> ReservationSeatRead => Set<ReservationSeat>().AsNoTracking();
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

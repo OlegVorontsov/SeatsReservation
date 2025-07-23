@@ -5,4 +5,4 @@ namespace SeatsReservation.Application.Commands.Venues.UpdateSeats;
 
 public record UpdateSeatsCommand(
     Guid Id,
-    IEnumerable<SeatDto> Seats) : ICommand;
+    IEnumerable<AvailableSeatDto> Seats) : ICommand;
