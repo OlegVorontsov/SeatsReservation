@@ -6,7 +6,6 @@ using SeatsReservation.Application.Commands.Seats;
 using SeatsReservation.Application.Commands.Venues;
 using SeatsReservation.Application.Interfaces.Database;
 using SeatsReservation.Infrastructure.Postgres.Factories;
-using SeatsReservation.Infrastructure.Postgres.Interfaces;
 using SeatsReservation.Infrastructure.Postgres.Repositories;
 using SeatsReservation.Infrastructure.Postgres.Seeding;
 using SeatsReservation.Infrastructure.Postgres.Write;
@@ -37,6 +36,8 @@ public static class InfrastructureDependencyInjection
         services.AddScoped<IReadDbContext, ApplicationWriteDbContext>(_ => new ApplicationWriteDbContext(dbConnectionString));
 
         services.AddSingleton<IDbConnectionFactory, NpgsqlConnectionFactory>();
+        // для маппинга SnakeCase бд в CamelCase, используемый Dapper
+        Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
         services.AddScoped<ITransactionManager, TransactionManager>();
         
         //services.AddScoped<IVenuesRepository, NpgSqlVenuesRepository>();

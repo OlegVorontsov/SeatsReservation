@@ -5,7 +5,6 @@ using SeatsReservation.Application.Commands.Venues;
 using SeatsReservation.Application.Interfaces.Database;
 using SeatsReservation.Domain.Entities.Venues;
 using SeatsReservation.Domain.ValueObjects.Events;
-using SeatsReservation.Infrastructure.Postgres.Interfaces;
 using SharedService.SharedKernel.BaseClasses;
 using SharedService.SharedKernel.Errors;
 

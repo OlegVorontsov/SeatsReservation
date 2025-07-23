@@ -36,10 +36,10 @@ public class GetByIdHandler(
             .Where(s => s.VenueId == eventResult.VenueId)
             .OrderBy(s => s.RowNumber)
             .ThenBy(s => s.SeatNumber)
+            .Select(s => SeatDto.FromDomainEntity(s))
             .ToListAsync(cancellationToken);
         
         return EventDto.FromDomainEntity(
-            eventResult,
-            seats.Select(SeatDto.FromDomainEntity).ToList());
+            eventResult, seats);
     }
 }
