@@ -1,0 +1,36 @@
+using SeatsReservation.Domain.Entities.Events;
+using SeatsReservation.Domain.Entities.Events.EventInfo;
+
+namespace SeatsReservation.Application.Shared.DTOs;
+
+public record EventWithoutSeatsDto(
+    Guid Id,
+    string Name,
+    DateTimeOffset EventDate,
+    int Capacity,
+    string? Description,
+    Guid VenueId,
+    string EventType,
+    string? EventInfo,
+    DateTimeOffset StartedAt,
+    DateTimeOffset EndedAt,
+    string EventStatus
+    )
+{
+    public static EventWithoutSeatsDto FromDomainEntity(
+        Event entity
+        ) =>
+        new(
+            entity.Id.Value,
+            entity.Name,
+            entity.EventDate,
+            entity.Details.Capacity,
+            entity.Details.Description,
+            entity.VenueId.Value,
+            entity.EventType.ToString(),
+            entity.EventInfo.ToString(),
+            entity.StartedAt,
+            entity.EndedAt,
+            entity.Status.ToString()
+            );
+}

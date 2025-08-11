@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using SeatsReservation.Application.Commands.Events.CreateEvent;
+using SeatsReservation.Application.Queries.Events.Get;
 using SeatsReservation.Application.Queries.Events.GetById;
 using SeatsReservation.Application.Shared.DTOs;
 using SharedService.Framework;
@@ -29,4 +30,11 @@ public class EventsController : ApplicationController
         [FromRoute] Guid eventId,
         CancellationToken cancellationToken = default) =>
         await handler.Handle(new GetByIdQuery(eventId), cancellationToken);
+    
+    [HttpGet]
+    public async Task<EndpointResult<GetEventsDto>> Get(
+        [FromQuery] GetQuery query,
+        [FromServices] GetHandler handler,
+        CancellationToken cancellationToken = default) =>
+        await handler.Handle(query, cancellationToken);
 }
