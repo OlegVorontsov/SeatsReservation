@@ -43,7 +43,15 @@ public class GetByIdHandler(
                     .Any(rs => rs.SeatId == s.Id && rs.EventId == eventId)))
             .ToListAsync(cancellationToken);
         
+        var totalSeats = readDbContext.SeatRead
+            .Count(s => s.VenueId == eventResult.VenueId);
+        
+        var reservedSeats = readDbContext.ReservationSeatRead
+            .Count(rs => rs.EventId == eventResult.Id);
+        
+        var availableSeats = totalSeats - reservedSeats;
+        
         return EventDto.FromDomainEntity(
-            eventResult, seats);
+            eventResult, seats, totalSeats, reservedSeats, availableSeats);
     }
 }

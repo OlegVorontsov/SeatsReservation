@@ -8,16 +8,26 @@ public record EventDto(
     string Name,
     DateTimeOffset EventDate,
     int Capacity,
-    string? EventDescription,
+    string? Description,
     Guid VenueId,
     string EventType,
     string? EventInfo,
     DateTimeOffset StartedAt,
     DateTimeOffset EndedAt,
     string EventStatus,
-    IReadOnlyList<AvailableSeatDto> Seats)
+    IReadOnlyList<AvailableSeatDto> Seats,
+    int? TotalSeats,
+    int? ReservedSeats,
+    int? AvailableSeats
+    )
 {
-    public static EventDto FromDomainEntity(Event entity, IReadOnlyList<AvailableSeatDto> seats) =>
+    public static EventDto FromDomainEntity(
+        Event entity,
+        IReadOnlyList<AvailableSeatDto> seats,
+        int? totalSeats,
+        int? reservedSeats,
+        int? availableSeats
+        ) =>
         new(
             entity.Id.Value,
             entity.Name,
@@ -30,5 +40,8 @@ public record EventDto(
             entity.StartedAt,
             entity.EndedAt,
             entity.Status.ToString(),
-            seats);
+            seats,
+            totalSeats,
+            reservedSeats,
+            availableSeats);
 }
