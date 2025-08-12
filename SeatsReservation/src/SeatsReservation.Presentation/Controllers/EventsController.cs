@@ -37,4 +37,11 @@ public class EventsController : ApplicationController
         [FromServices] GetHandler handler,
         CancellationToken cancellationToken = default) =>
         await handler.Handle(query, cancellationToken);
+    
+    [HttpGet("/dapper")]
+    public async Task<EndpointResult<GetEventsDapperDto>> GetDapper(
+        [FromQuery] GetQuery query,
+        [FromServices] GetHandlerDapper handler,
+        CancellationToken cancellationToken = default) =>
+        await handler.Handle(query, cancellationToken);
 }
