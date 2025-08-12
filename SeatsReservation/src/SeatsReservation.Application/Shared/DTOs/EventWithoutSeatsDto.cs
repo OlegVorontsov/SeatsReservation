@@ -1,9 +1,8 @@
 using SeatsReservation.Domain.Entities.Events;
-using SeatsReservation.Domain.Entities.Events.EventInfo;
 
 namespace SeatsReservation.Application.Shared.DTOs;
 
-public record EventDto(
+public record EventWithoutSeatsDto(
     Guid Id,
     string Name,
     DateTimeOffset EventDate,
@@ -15,15 +14,13 @@ public record EventDto(
     DateTimeOffset StartedAt,
     DateTimeOffset EndedAt,
     string EventStatus,
-    IReadOnlyList<AvailableSeatDto> Seats,
     int? TotalSeats,
     int? ReservedSeats,
     int? AvailableSeats
     )
 {
-    public static EventDto FromDomainEntity(
+    public static EventWithoutSeatsDto FromDomainEntity(
         Event entity,
-        IReadOnlyList<AvailableSeatDto> seats,
         int? totalSeats,
         int? reservedSeats,
         int? availableSeats
@@ -40,8 +37,8 @@ public record EventDto(
             entity.StartedAt,
             entity.EndedAt,
             entity.Status.ToString(),
-            seats,
             totalSeats,
             reservedSeats,
-            availableSeats);
+            availableSeats
+            );
 }

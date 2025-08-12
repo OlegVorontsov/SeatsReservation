@@ -11,7 +11,7 @@ public record EventDtoDapper
 
     public int Capacity { get; init; }
 
-    public string EventDescription { get; init; } = string.Empty;
+    public string Description { get; init; } = string.Empty;
 
     public Guid VenueId { get; init; }
 
@@ -24,6 +24,12 @@ public record EventDtoDapper
     public DateTimeOffset EndedAt { get; init; }
 
     public string EventStatus { get; init; } = string.Empty;
+    
+    public int TotalSeats { get; init; }
+
+    public int ReservedSeats { get; init; }
+
+    public int AvailableSeats { get; init; }
 
     public List<AvailableSeatDtoDapper> Seats { get; init; } = [];
 }

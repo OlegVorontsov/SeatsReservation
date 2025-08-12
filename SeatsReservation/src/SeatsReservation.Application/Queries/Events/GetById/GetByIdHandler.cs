@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using SeatsReservation.Application.Interfaces.Database;
 using SeatsReservation.Application.Shared.DTOs;
 using SeatsReservation.Domain.Entities.Events;
+using SeatsReservation.Domain.Entities.Reservations;
 using SharedService.Core.Abstractions;
 using SharedService.Core.Validation;
 using SharedService.SharedKernel.BaseClasses;
@@ -43,7 +44,19 @@ public class GetByIdHandler(
                     .Any(rs => rs.SeatId == s.Id && rs.EventId == eventId)))
             .ToListAsync(cancellationToken);
         
+        var totalSeats = readDbContext.SeatRead
+            .Count(s => s.VenueId == eventResult.VenueId);
+        
+        var reservedSeats = readDbContext.ReservationSeatRead
+            .Count(rs => rs.EventId == eventResult.Id);
+            
+        var availableSeats = readDbContext.SeatRead
+            .Count(s => s.VenueId == eventResult.VenueId) - readDbContext.ReservationSeatRead
+            .Count(rs => rs.EventId == eventResult.Id &&
+                         (rs.Reservation.Status == ReservationStatus.Confirmed ||
+                          rs.Reservation.Status == ReservationStatus.Pending));
+        
         return EventDto.FromDomainEntity(
-            eventResult, seats);
+            eventResult, seats, totalSeats, reservedSeats, availableSeats);
     }
 }
