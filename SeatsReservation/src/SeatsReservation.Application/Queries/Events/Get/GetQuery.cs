@@ -8,5 +8,9 @@ public record GetQuery(
     DateTime? DateFrom,
     DateTime? DateTo,
     string? Status,
-    Guid? VenueId
+    Guid? VenueId,
+    int? MinAvailableSeats,
+    PaginationRequest Pagination
     ) : IQuery;
+    
+    public record PaginationRequest(int Page = 1, int PageSize = 20);
