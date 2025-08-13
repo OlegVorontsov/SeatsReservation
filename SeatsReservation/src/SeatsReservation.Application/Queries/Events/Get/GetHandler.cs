@@ -85,7 +85,11 @@ public class GetHandler(
                 readDbContext.SeatRead.Count(s => s.VenueId == e.VenueId) -
                 readDbContext.ReservationSeatRead.Count(rs => rs.EventId == e.Id &&
                                                               (rs.Reservation.Status == ReservationStatus.Confirmed ||
-                                                               rs.Reservation.Status == ReservationStatus.Pending))))
+                                                               rs.Reservation.Status == ReservationStatus.Pending)),
+                Math.Round((double)readDbContext.ReservationSeatRead.Count(rs => rs.EventId == e.Id &&
+                        (rs.Reservation.Status == ReservationStatus.Confirmed ||
+                         rs.Reservation.Status == ReservationStatus.Pending)) /
+                    readDbContext.SeatRead.Count(s => s.VenueId == e.VenueId) * 100.0, 2)))
             .ToListAsync(cancellationToken);
         
         return new GetEventsDto(events, totalCount);

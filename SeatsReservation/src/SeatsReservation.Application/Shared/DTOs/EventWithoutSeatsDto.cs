@@ -16,14 +16,16 @@ public record EventWithoutSeatsDto(
     string EventStatus,
     int? TotalSeats,
     int? ReservedSeats,
-    int? AvailableSeats
+    int? AvailableSeats,
+    double? PopularityPercentage
     )
 {
     public static EventWithoutSeatsDto FromDomainEntity(
         Event entity,
         int? totalSeats,
         int? reservedSeats,
-        int? availableSeats
+        int? availableSeats,
+        double? popularityPercentage
         ) =>
         new(
             entity.Id.Value,
@@ -39,6 +41,7 @@ public record EventWithoutSeatsDto(
             entity.Status.ToString(),
             totalSeats,
             reservedSeats,
-            availableSeats
+            availableSeats,
+            popularityPercentage
             );
 }

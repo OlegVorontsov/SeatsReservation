@@ -91,6 +91,7 @@ public class GetHandlerDapper(
 
         var events = await connection.QueryAsync<EventWithoutSeatsDtoDapper, long, EventWithoutSeatsDtoDapper>(
             $"""
+              WITH event_stats AS (
               SELECT e.id,
                      e.name,
                      e.event_date,
@@ -117,7 +118,22 @@ public class GetHandlerDapper(
 
                       FROM seats_reservation.events e
                       JOIN seats_reservation.event_details ed ON e.id = ed.event_id
-                      {whereClause}
+                      {whereClause})
+              SELECT id,
+                     name,
+                     event_date,
+                     capacity,
+                     description,
+                     venue_id,
+                     event_type,
+                     event_info,
+                     started_at,
+                     ended_at,
+                     status,
+                     total_seats - reserved_seats                          as available_seats,
+                     ROUND(reserved_seats::decimal / total_seats * 100, 2) as popularity_percentage,
+                     total_count
+              FROM event_stats
               {orderByClause}
               LIMIT @page_size OFFSET @offset;
               """,
