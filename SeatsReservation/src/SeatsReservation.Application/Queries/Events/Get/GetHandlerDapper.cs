@@ -72,41 +72,55 @@ public class GetHandlerDapper(
         parameters.Add("page_size", query.Pagination.PageSize);
 
         var whereClause = conditions.Count > 0 ? "WHERE " + string.Join(" AND ", conditions) : "";
+        
+        var direction = query.SortDirection?.ToLower() == "asc" ? "ASC" : "DESC";
+
+        var orderByField = query.SortBy?.ToLower() switch
+        {
+            "date" => "event_date",
+            "name" => "name",
+            "status" => "status",
+            "type" => "type",
+            "popularity" => "popularity_percentage",
+            _ => "event_date"
+        };
+
+        var orderByClause = $"ORDER BY {orderByField} {direction}";
 
         long? totalCount = null;
 
         var events = await connection.QueryAsync<EventWithoutSeatsDtoDapper, long, EventWithoutSeatsDtoDapper>(
             $"""
-             SELECT e.id,
-                    e.name,
-                    e.event_date,
-                    ed.capacity,
-                    ed.description,
-                    e.venue_id,
-                    e.event_type,
-                    e.event_info,
-                    e.started_at,
-                    e.ended_at,
-                    e.status,
+              SELECT e.id,
+                     e.name,
+                     e.event_date,
+                     ed.capacity,
+                     ed.description,
+                     e.venue_id,
+                     e.event_type,
+                     e.event_info,
+                     e.started_at,
+                     e.ended_at,
+                     e.status,
 
-                    (SELECT COUNT(*)
-                     FROM seats_reservation.seats s
-                     WHERE s.venue_id = e.venue_id)                        as total_seats,
+                     (SELECT COUNT(*)
+                      FROM seats_reservation.seats s
+                      WHERE s.venue_id = e.venue_id)                        as total_seats,
 
-                    (SELECT COUNT(*)
-                     FROM seats_reservation.reservation_seats rs
-                     JOIN seats_reservation.reservations r ON rs.reservation_id = r.id
-                     WHERE rs.event_id = e.id
-                     AND r.reservation_status IN ('Confirmed', 'Pending')) as reserved_seats,
+                     (SELECT COUNT(*)
+                      FROM seats_reservation.reservation_seats rs
+                      JOIN seats_reservation.reservations r ON rs.reservation_id = r.id
+                      WHERE rs.event_id = e.id
+                      AND r.reservation_status IN ('Confirmed', 'Pending')) as reserved_seats,
 
-                     COUNT(*) OVER ()                                      as total_count
+                      COUNT(*) OVER ()                                      as total_count
 
-                     FROM seats_reservation.events e
-                     JOIN seats_reservation.event_details ed ON e.id = ed.event_id
-                     {whereClause}
-             ORDER BY e.event_date DESC
-             LIMIT @page_size OFFSET @offset;
-             """,
+                      FROM seats_reservation.events e
+                      JOIN seats_reservation.event_details ed ON e.id = ed.event_id
+                      {whereClause}
+              {orderByClause}
+              LIMIT @page_size OFFSET @offset;
+              """,
             splitOn: "total_count",
             map: (@event, count) =>
             {
