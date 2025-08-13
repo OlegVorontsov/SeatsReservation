@@ -28,4 +28,8 @@ public record EventWithoutSeatsDtoDapper
     public int TotalSeats { get; init; }
 
     public int ReservedSeats { get; init; }
+    
+    public int AvailableSeats { get; init; }
+
+    public double PopularityPercentage { get; init; }
 }
